@@ -104,7 +104,7 @@ class AnalizadorLexico(var codigo : String)  {
      * Metodo que continua con el siguiente caracter del codigo fuente
      */
     private fun obtenerSiguienteCaracter(){
-        if (posicionActual == codigoFuente!!.length - 1) {
+        if (posicionActual == codigoFuente.length - 1) {
             caracterActual = finCodigo
 
         } else {
@@ -116,7 +116,7 @@ class AnalizadorLexico(var codigo : String)  {
                 columnaActual++
             }
             posicionActual++
-            caracterActual = codigoFuente!![posicionActual]
+            caracterActual = codigoFuente[posicionActual]
 
         }
     }
@@ -158,11 +158,11 @@ class AnalizadorLexico(var codigo : String)  {
         val columnaInicio = columnaActual
         val guardarPos = posicionActual
 
-        if (caracterActual!!.isDigit()) {
+        if (caracterActual.isDigit()) {
             palabra += caracterActual
 
             obtenerSiguienteCaracter()
-            while (caracterActual!!.isDigit()) {
+            while (caracterActual.isDigit()) {
                 palabra += caracterActual
                 obtenerSiguienteCaracter()
             }
@@ -186,20 +186,20 @@ class AnalizadorLexico(var codigo : String)  {
         val columnaInicial = columnaActual
         val posicionInicial = posicionActual
 
-        if (caracterActual!!.isDigit()) {
+        if (caracterActual.isDigit()) {
             lexema += caracterActual
             obtenerSiguienteCaracter()
-            while (caracterActual!!.isDigit()) {
+            while (caracterActual.isDigit()) {
                 lexema += caracterActual
                 obtenerSiguienteCaracter()
             }
             if (caracterActual == ',') {
                 lexema += caracterActual
                 obtenerSiguienteCaracter()
-                if (caracterActual!!.isDigit()) {
+                if (caracterActual.isDigit()) {
                     lexema += caracterActual
                     obtenerSiguienteCaracter()
-                    while (caracterActual!!.isDigit()) {
+                    while (caracterActual.isDigit()) {
                         lexema += caracterActual
                         obtenerSiguienteCaracter()
                     }
@@ -215,10 +215,10 @@ class AnalizadorLexico(var codigo : String)  {
         if (caracterActual == ',') {
             lexema += caracterActual
             obtenerSiguienteCaracter()
-            if (caracterActual!!.isDigit()) {
+            if (caracterActual.isDigit()) {
                 lexema += caracterActual
                 obtenerSiguienteCaracter()
-                while (caracterActual!!.isDigit()) {
+                while (caracterActual.isDigit()) {
                     lexema += caracterActual
                     obtenerSiguienteCaracter()
                 }
@@ -291,7 +291,7 @@ class AnalizadorLexico(var codigo : String)  {
         val filaInicial = filaActual
         val columnaInicial = columnaActual
         val posicionInicial = posicionActual
-        if (caracterActual == ':') {
+        if (caracterActual == '=') {
             lexema += caracterActual
             obtenerSiguienteCaracter()
             if (caracterActual == '+') {
@@ -321,7 +321,7 @@ class AnalizadorLexico(var codigo : String)  {
         val filaInicial = filaActual
         val columnaInicial = columnaActual
         val posicionInicial = posicionActual
-        if (caracterActual == ':') {
+        if (caracterActual == '=') {
             lexema += caracterActual
             obtenerSiguienteCaracter()
             if (caracterActual == '-') {
@@ -1430,57 +1430,57 @@ class AnalizadorLexico(var codigo : String)  {
         val columnaInicial = columnaActual
         val posicionInicial = posicionActual
 
-        if (caracterActual == 'I') {
+        if(caracterActual == 'I'){
             lexema += caracterActual
             obtenerSiguienteCaracter()
-            if (caracterActual == 'M') {
+            if(caracterActual == 'M'){
                 lexema += caracterActual
                 obtenerSiguienteCaracter()
-                if (caracterActual == 'P') {
+                if(caracterActual == 'P'){
                     lexema += caracterActual
                     obtenerSiguienteCaracter()
-                    if (caracterActual == 'R') {
+                    if(caracterActual == 'R'){
                         lexema += caracterActual
                         obtenerSiguienteCaracter()
-                        if (caracterActual == 'I') {
+                        if(caracterActual == 'I'){
                             lexema += caracterActual
                             obtenerSiguienteCaracter()
-                            if (caracterActual == 'M') {
+                            if(caracterActual == 'M'){
                                 lexema += caracterActual
                                 obtenerSiguienteCaracter()
-                                if (caracterActual == 'I') {
+                                if(caracterActual == 'I'){
                                     lexema += caracterActual
                                     obtenerSiguienteCaracter()
-                                    return if (caracterActual == 'R') {
+                                    if(caracterActual == 'R'){
                                         lexema += caracterActual
                                         obtenerSiguienteCaracter()
-                                        almacenarSimbolo(lexema, filaInicial, columnaInicial, Categoria.PALABRA_RESERVADA)
-                                        true
-                                    } else {
-                                        reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
-                                        true
+                                        almacenarSimbolo(lexema,filaInicial,columnaInicial,Categoria.PALABRA_RESERVADA)
+                                        return true
+                                    }else{
+                                        reportarError(lexema,filaInicial,columnaInicial,posicionInicial)
+                                        return true
                                     }
-                                } else {
-                                    reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
+                                }else{
+                                    reportarError(lexema,filaInicial,columnaInicial,posicionInicial)
                                     return true
                                 }
-                            } else {
-                                reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
+                            }else{
+                                reportarError(lexema,filaInicial,columnaInicial,posicionInicial)
                                 return true
                             }
-                        } else {
-                            reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
+                        }else{
+                            reportarError(lexema,filaInicial,columnaInicial,posicionInicial)
                             return true
                         }
-                    } else {
-                        reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
+                    }else{
+                        reportarError(lexema,filaInicial,columnaInicial,posicionInicial)
                         return true
                     }
-                } else {
+                }else{
                     hacerBacktracking(posicionInicial)
                     return false
                 }
-            } else {
+            }else{
                 hacerBacktracking(posicionInicial)
                 return false
             }
@@ -1543,8 +1543,8 @@ class AnalizadorLexico(var codigo : String)  {
                         return true
                     }
                 } else {
-                    reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
-                    return true
+                    hacerBacktracking(posicionInicial)
+                    return false
                 }
             } else {
                 hacerBacktracking(posicionInicial)
