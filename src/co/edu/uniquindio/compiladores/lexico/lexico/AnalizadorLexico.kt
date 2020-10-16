@@ -585,31 +585,38 @@ class AnalizadorLexico(var codigo : String)  {
             if (caracterActual == '-') {
                 lexema += caracterActual
                 obtenerSiguienteCaracter()
-                while (caracterActual != '-') {
-                    lexema += caracterActual
-                    obtenerSiguienteCaracter()
-                    if (caracterActual == finCodigo) {
-                        reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
-                        return true
-                    }
+                do{
 
-                }
-                if (caracterActual == '-') {
-                    lexema += caracterActual
-                    obtenerSiguienteCaracter()
-                    return if (caracterActual == '+') {
                         lexema += caracterActual
                         obtenerSiguienteCaracter()
-                        almacenarSimbolo(lexema, filaInicial, columnaInicial, Categoria.COMENTARIO_BLOQUE)
-                        true
-                    } else if (caracterActual == finCodigo) {
-                        reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
-                        true
-                    } else {
-                        reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
-                        true
-                    }
+                        if(caracterActual == '-'){
+                            lexema += caracterActual
+                            obtenerSiguienteCaracter()
+                            if(caracterActual == '+'){
+                                x = true
+                            }
+                        }
+                        if (caracterActual == finCodigo) {
+                            reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
+                            return true
+                        }
+
+
+                }while (!x)
+
+                return if (caracterActual == '+') {
+                    lexema += caracterActual
+                    obtenerSiguienteCaracter()
+                    almacenarSimbolo(lexema, filaInicial, columnaInicial, Categoria.COMENTARIO_BLOQUE)
+                    true
+                } else if (caracterActual == finCodigo) {
+                    reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
+                    true
+                } else {
+                    reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
+                    true
                 }
+
             } else if (caracterActual == finCodigo) {
                 reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
                 return true
