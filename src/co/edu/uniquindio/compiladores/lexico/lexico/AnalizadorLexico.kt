@@ -64,8 +64,7 @@ class AnalizadorLexico(var codigo : String)  {
                 continue
             if (esOperadorRelacional())
                 continue
-            if (esComentarioBloque())
-                continue
+            if (esComentarioBloque()) continue
             if (esIdentificadorVariable())
                 continue
             if (esIdentificadorMetodo())
@@ -548,7 +547,7 @@ class AnalizadorLexico(var codigo : String)  {
                 lexema += caracterActual
                 obtenerSiguienteCaracter()
                 while (caracterActual != '\n') {
-                    if (caracterActual === finCodigo) {
+                    if (caracterActual == finCodigo) {
                         reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
 
                     } else {
@@ -578,30 +577,32 @@ class AnalizadorLexico(var codigo : String)  {
         val filaInicial = filaActual
         val columnaInicial = columnaActual
         val posicionInicial = posicionActual
+        var x = false
 
-        if (caracterActual == '_') {
+        if (caracterActual == '+') {
             lexema += caracterActual
             obtenerSiguienteCaracter()
-            if (caracterActual == '<') {
+            if (caracterActual == '-') {
                 lexema += caracterActual
                 obtenerSiguienteCaracter()
-                while (caracterActual != '>') {
+                while (caracterActual != '-') {
                     lexema += caracterActual
                     obtenerSiguienteCaracter()
                     if (caracterActual == finCodigo) {
                         reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
                         return true
                     }
+
                 }
-                if (caracterActual == '>') {
+                if (caracterActual == '-') {
                     lexema += caracterActual
                     obtenerSiguienteCaracter()
-                    return if (caracterActual == '_') {
+                    return if (caracterActual == '+') {
                         lexema += caracterActual
                         obtenerSiguienteCaracter()
                         almacenarSimbolo(lexema, filaInicial, columnaInicial, Categoria.COMENTARIO_BLOQUE)
                         true
-                    } else if (caracterActual === finCodigo) {
+                    } else if (caracterActual == finCodigo) {
                         reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
                         true
                     } else {
@@ -609,7 +610,7 @@ class AnalizadorLexico(var codigo : String)  {
                         true
                     }
                 }
-            } else if (caracterActual === finCodigo) {
+            } else if (caracterActual == finCodigo) {
                 reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
                 return true
             }
@@ -751,10 +752,10 @@ class AnalizadorLexico(var codigo : String)  {
         if (caracterActual == '$') {
             lexema += caracterActual
             obtenerSiguienteCaracter()
-            return if (caracterActual!!.isUpperCase()) {
+            return if (caracterActual.isUpperCase()) {
                 lexema += caracterActual
                 obtenerSiguienteCaracter()
-                while (caracterActual!!.isUpperCase()) {
+                while (caracterActual.isUpperCase()) {
                     lexema += caracterActual
                     obtenerSiguienteCaracter()
                 }
