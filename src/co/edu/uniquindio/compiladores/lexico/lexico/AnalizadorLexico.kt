@@ -1473,8 +1473,9 @@ class AnalizadorLexico(var codigo : String)  {
                             return true
                         }
                     }else{
-                        reportarError(lexema,filaInicial,columnaInicial,posicionInicial)
-                        return true
+                        //Cuando es IMPORTAR
+                        hacerBacktracking(posicionInicial)
+                        return false
                     }
                 }else{
                     hacerBacktracking(posicionInicial)
@@ -1539,8 +1540,9 @@ class AnalizadorLexico(var codigo : String)  {
                             return true
                         }
                     } else {
-                        reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
-                        return true
+                        //cuando es IMPORTAR
+                        hacerBacktracking(posicionInicial)
+                        return false
                     }
                 } else {
                     hacerBacktracking(posicionInicial)

@@ -7,6 +7,8 @@ import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.*
+import javafx.scene.control.Alert
+import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.cell.PropertyValueFactory
 import java.io.*
 import java.net.URL
@@ -14,6 +16,7 @@ import java.util.*
 import javax.swing.JFileChooser
 import javax.swing.JOptionPane
 import javax.swing.filechooser.FileNameExtensionFilter
+
 
 class AnalizadorController: Initializable {
 
@@ -72,12 +75,20 @@ class AnalizadorController: Initializable {
             }
 
         } catch (ex: IOException) {
-            JOptionPane.showMessageDialog(
-                null, "$ex\nNo se ha encontrado el archivo", "Error",
-                JOptionPane.ERROR_MESSAGE
-            )
+            //En JavaFX en lugar de usar JOptionPane se debe usar
+            val alert = Alert(AlertType.ERROR)
+            alert.title = "Error"
+            alert.headerText = "Error"
+            alert.contentText = "$ex\\nNo se ha encontrado el archivo"
+            alert.show()
+
         } catch (e2: NullPointerException) {
-            JOptionPane.showMessageDialog(null, "Se ha cancelado el cargado")
+            val alert = Alert(AlertType.ERROR)
+            alert.title = "Error"
+            alert.headerText = "Error"
+            alert.contentText = "Se ha cancelado el cargado"
+            alert.show()
+
         }
     }
 
@@ -89,11 +100,23 @@ class AnalizadorController: Initializable {
                 val buff = BufferedWriter(archivos)
                 buff.write(txtCodigo.text)
                 buff.close()
-                JOptionPane.showMessageDialog(null, "Se ha guardado correctamente")
+                val alert = Alert(AlertType.INFORMATION)
+                alert.title = "Información"
+                alert.headerText = "Información"
+                alert.contentText = "Se ha guardado correctamente"
+                alert.show()
             } catch (e1: IOException) {
-                JOptionPane.showMessageDialog(null, "No se ha guardado")
+                val alert = Alert(AlertType.INFORMATION)
+                alert.title = "Información"
+                alert.headerText = "Información"
+                alert.contentText = "No se ha guardado"
+                alert.show()
             } catch (e2: NullPointerException) {
-                JOptionPane.showMessageDialog(null, "Se ha cancelado el guardado")
+                val alert = Alert(AlertType.INFORMATION)
+                alert.title = "Información"
+                alert.headerText = "Información"
+                alert.contentText = "Se ha cancelado el guardado"
+                alert.show()
             }
         } else {
             try {
@@ -110,13 +133,25 @@ class AnalizadorController: Initializable {
                 val buff = BufferedWriter(archivos)
                 buff.write(txtCodigo.text)
                 buff.close()
-                JOptionPane.showMessageDialog(null, "Se ha guardado correctamente")
+                val alert = Alert(AlertType.INFORMATION)
+                alert.title = "Información"
+                alert.headerText = "Información"
+                alert.contentText = "Se ha guardado correctamente"
+                alert.show()
                 fichero = fileToSave!!.absoluteFile
                 guardado = true
             } catch (e1: IOException) {
-                JOptionPane.showMessageDialog(null, "No se ha guardao")
+                val alert = Alert(AlertType.INFORMATION)
+                alert.title = "Información"
+                alert.headerText = "Información"
+                alert.contentText = "No se ha gusradado"
+                alert.show()
             } catch (e2: NullPointerException) {
-                JOptionPane.showMessageDialog(null, "Se ha cancelado el guardado")
+                val alert = Alert(AlertType.INFORMATION)
+                alert.title = "Información"
+                alert.headerText = "Información"
+                alert.contentText = "Se ha cancelado el guardado"
+                alert.show()
             }
         }
 
