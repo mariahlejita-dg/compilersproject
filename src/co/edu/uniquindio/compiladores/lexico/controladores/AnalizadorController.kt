@@ -10,6 +10,8 @@ import javafx.scene.control.*
 import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.cell.PropertyValueFactory
+import javafx.stage.FileChooser
+import javafx.stage.Stage
 import java.io.*
 import java.net.URL
 import java.util.*
@@ -56,40 +58,35 @@ class AnalizadorController: Initializable {
 
 
     fun abrirArchivo(actionEvent: ActionEvent) {
-        var aux = ""
-        var texto = ""
-        try {
-            val file = JFileChooser()
-            file.dialogTitle = "Abrir Archivo"
-            val filter = FileNameExtensionFilter(".MG", "mg")
-            file.fileFilter = filter
-            file.showOpenDialog(null)
-            fichero = file.selectedFile
-            if (fichero != null) {
-                val archivos = FileReader(fichero)
-                val buff = BufferedReader(archivos)
-                while (!buff.readLine().equals(null)) {
-                    texto += buff.readLine()
-                }
-                buff.close()
-            }
+        val fileChooser = FileChooser()
 
-        } catch (ex: IOException) {
-            //En JavaFX en lugar de usar JOptionPane se debe usar
-            val alert = Alert(AlertType.ERROR)
-            alert.title = "Error"
-            alert.headerText = "Error"
-            alert.contentText = "$ex\\nNo se ha encontrado el archivo"
-            alert.show()
+        val extFilter = FileChooser.ExtensionFilter("Archivos (*.mg)", "*.mg")
+        fileChooser.extensionFilters.add(extFilter)
 
-        } catch (e2: NullPointerException) {
-            val alert = Alert(AlertType.ERROR)
-            alert.title = "Error"
-            alert.headerText = "Error"
-            alert.contentText = "Se ha cancelado el cargado"
-            alert.show()
-
+        val file = fileChooser.showOpenDialog(Stage())
+        if (file != null) {
+            txtCodigo.text = readFile(file) //obtener el texto
         }
+    }
+    private fun readFile(file: File): String? {
+        val stringBuffer = StringBuilder()
+        var bufferedReader: BufferedReader? = null
+        try {
+            bufferedReader = BufferedReader(FileReader(file))
+            var text: String?
+            while (bufferedReader.readLine().also { text = it } != null) {
+                stringBuffer.append(text+"\n")
+            }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        } finally {
+            try {
+                bufferedReader!!.close()
+            } catch (ex: IOException) {
+                ex.printStackTrace()
+            }
+        }
+        return stringBuffer.toString()
     }
 
     fun guardarArchivo(actionEvent: ActionEvent) {
@@ -153,6 +150,7 @@ class AnalizadorController: Initializable {
                 alert.contentText = "Se ha cancelado el guardado"
                 alert.show()
             }
+
         }
 
     }

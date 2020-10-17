@@ -1548,6 +1548,7 @@ class AnalizadorLexico(var codigo : String)  {
                     hacerBacktracking(posicionInicial)
                     return false
                 }
+
             } else {
                 hacerBacktracking(posicionInicial)
                 return false
