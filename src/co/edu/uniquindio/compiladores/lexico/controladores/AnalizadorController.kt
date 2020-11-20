@@ -2,6 +2,7 @@ package co.edu.uniquindio.compiladores.lexico.controladores
 
 import co.edu.uniquindio.compiladores.lexico.lexico.AnalizadorLexico
 import co.edu.uniquindio.compiladores.lexico.lexico.Token
+import co.edu.uniquindio.compiladores.lexico.sintaxis.ErrorSintactico
 import javafx.collections.FXCollections
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
@@ -37,6 +38,13 @@ class AnalizadorController: Initializable {
     @FXML lateinit var tabSimbolos : Tab
     @FXML lateinit var tabErrores : Tab
     @FXML lateinit var tapPane : TabPane
+
+    @FXML lateinit var tablaErrorSintactico : TableView<ErrorSintactico>
+    @FXML lateinit var ColumMensaje : TableColumn<ErrorSintactico,String>
+    @FXML lateinit var columFilaSintaxis : TableColumn<ErrorSintactico,String>
+    @FXML lateinit var columColunmnaSintaxis : TableColumn<ErrorSintactico,String>
+
+    @FXML lateinit var TreeVisual : TreeView<String>
 
     lateinit var fichero : File
     var guardado : Boolean = false

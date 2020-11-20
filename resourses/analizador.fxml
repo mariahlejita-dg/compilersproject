@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
@@ -17,14 +18,14 @@
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <MenuButton fx:id="menuArchivo" layoutX="2.0" layoutY="2.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="86.0" text="Archivo">
+                  <MenuButton fx:id="menuArchivo" layoutX="2.0" layoutY="2.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="127.0" text="Archivo">
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#abrirArchivo" text="Abrir" />
                         <MenuItem mnemonicParsing="false" onAction="#guardarArchivo" text="Guardar" />
                         <MenuItem mnemonicParsing="false" onAction="#nuevoArchivo" text="Nuevo" />
                      </items>
                   </MenuButton>
-                  <MenuButton fx:id="menuCorrer" layoutX="96.0" layoutY="3.0" mnemonicParsing="false" text="Correr">
+                  <MenuButton fx:id="menuCorrer" layoutX="140.0" layoutY="1.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="93.0" text="Correr">
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#compilar" text="Compilar" />
                      </items>
@@ -66,7 +67,41 @@
                         <TableColumn fx:id="columCategoriaError" prefWidth="188.79998779296875" text="Categoría" />
                     </columns>
                   </TableView>
-                  <Label layoutX="205.0" layoutY="30.0" text="Errores Sintacticos">
+                  <Label layoutX="226.0" layoutY="30.0" text="Errores Lexicos">
+                     <font>
+                        <Font name="Georgia Bold Italic" size="25.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+        </content>
+      </Tab>
+      <Tab fx:id="tabErrorSintaxis" text="Errores Sintacticos">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Label layoutX="202.0" layoutY="14.0" text="Errores Sintacticos">
+                     <font>
+                        <Font name="Georgia Bold Italic" size="25.0" />
+                     </font>
+                  </Label>
+                  <TableView fx:id="tablaErrorSintactico" layoutX="14.0" layoutY="76.0" prefHeight="333.0" prefWidth="618.0">
+                    <columns>
+                      <TableColumn fx:id="ColumMensaje" prefWidth="359.99995708465576" text="Mensaje" />
+                      <TableColumn fx:id="columFilaSintaxis" minWidth="0.0" prefWidth="122.40005493164062" text="Fila" />
+                        <TableColumn fx:id="columColunmnaSintaxis" prefWidth="136.00006103515625" text="Columna" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+        </content>
+      </Tab>
+      <Tab fx:id="ArbolVisual" text="Arbol Visual">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TreeView fx:id="TreeVisual" layoutX="10.0" layoutY="55.0" prefHeight="354.0" prefWidth="636.0" />
+                  <Label layoutX="240.0" layoutY="14.0" text="Arbol Visual">
                      <font>
                         <Font name="Georgia Bold Italic" size="25.0" />
                      </font>
