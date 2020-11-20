@@ -12,8 +12,14 @@ class Para {
     private var incremento: SentenciaIncremento? = null
     private var listaSentencias: ArrayList<Sentencia>? = null
 
-
-
+    constructor(para: Token, expresion: Expresion, decremento: SentenciaDecremento,
+                incremento: SentenciaIncremento,listaSentencias: ArrayList<Sentencia>) {
+        this.para = para
+        this.expresion = expresion
+        this.decremento=decremento
+        this.incremento=incremento
+        this.listaSentencias=listaSentencias
+    }
 
     val arbolVisual: TreeItem<String>
         get() {
@@ -36,11 +42,5 @@ class Para {
             return raiz
         }
 
-    fun analizarSemantica(error: ArrayList<String?>?, tS: TablaSimbolos?, ambito: Simbolo?) {
-        // TODO Auto-generated method stub
-    }
 
-    fun llenarTablaSimbolos(ts: TablaSimbolos?, ambito: Simbolo?) {
-        // TODO Auto-generated method stub
-    }
 }

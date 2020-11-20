@@ -52,13 +52,6 @@ class Mientras {
             return raiz
         }
 
-    override fun analizarSemantica(error: ArrayList<String?>?, tS: TablaSimbolos?, ambito: Simbolo?) {
-        // TODO Auto-generated method stub
-    }
-
-    override fun llenarTablaSimbolos(ts: TablaSimbolos?, ambito: Simbolo?) {
-        // TODO Auto-generated method stub
-    }
 
 
 }
