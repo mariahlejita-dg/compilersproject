@@ -14,8 +14,8 @@ class SentenciaIncremento {
         this.incremento = incremento
     }
 
-    val arbolVisual: TreeItem<String>
-        get() {
+    fun getArbolVisual() : TreeItem<String>
+    {
             val raiz = TreeItem("Sentencia incremento")
             raiz.children.add(TreeItem<String>(identificadorVariable!!.lexema))
             raiz.children.add(TreeItem<String>(incremento!!.lexema))

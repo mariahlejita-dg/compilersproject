@@ -21,8 +21,8 @@ class Para {
         this.listaSentencias=listaSentencias
     }
 
-    val arbolVisual: TreeItem<String>
-        get() {
+    fun getArbolVisual() : TreeItem<String>
+    {
             val raiz = TreeItem("Para")
             raiz.children.add(expresion!!.getArbolVisual())
             if (decremento != null) {

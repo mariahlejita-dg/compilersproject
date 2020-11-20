@@ -40,8 +40,8 @@ class Mientras {
 
 
 
-    val arbolVisual: TreeItem<String>
-        get() {
+    fun getArbolVisual() : TreeItem<String>
+    {
             val raiz = TreeItem("Mientras")
             raiz.children.add(expresionLogica.getArbolVisual())
             if (listaSentencias != null) {

@@ -31,8 +31,8 @@ class Si {
 
 
 
-    val arbolVisual: TreeItem<String>
-        get() {
+    fun getArbolVisual() : TreeItem<String>
+    {
             val raiz = TreeItem("Si")
             raiz.children.add(expresion!!.getArbolVisual())
             if (listaSentencias != null) {

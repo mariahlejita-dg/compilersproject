@@ -16,8 +16,8 @@ class Retorno {
         this.termino = termino
     }
 
-    val arbolVisual: TreeItem<String>
-        get() {
+    fun getArbolVisual() : TreeItem<String>
+    {
             val raiz = TreeItem("Retorno")
             raiz.children.add(termino!!.getArbolVisual())
             return raiz
