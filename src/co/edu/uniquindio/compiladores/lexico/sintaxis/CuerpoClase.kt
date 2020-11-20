@@ -21,7 +21,7 @@ class CuerpoClase  {
     fun getArbolVisual() : TreeItem<String>{
         val raiz = TreeItem( "Cuerpo clase")
         if (metodo != null){
-            raiz.children.add( metodo.getArbolVisual() )
+            raiz.children.add( metodo!!.getArbolVisual() )
             if(cuerpoClase != null){
                 return cuerpoClase!!.getArbolVisual()
             }
