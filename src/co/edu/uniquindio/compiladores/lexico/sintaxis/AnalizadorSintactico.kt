@@ -138,14 +138,14 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
             }
         } else {
             hacerBactracking(posInicial);
-            var declaracionVariable : Sentencia = esDeclaracionVariable()
+            var declaracionVariable : DeclaracionVariable = esDeclaracionVariable() as DeclaracionVariable
             if (declaracionVariable != null) {
 
                 var cuerpoClase1 : CuerpoClase = esCuerpoClase();
                 if (cuerpoClase1 != null) {
-                    return CuerpoClase(declaracionVariable, cuerpoClase1);
+                    return CuerpoClase(declaracionVariable, cuerpoClase1)
                 } else {
-                    return CuerpoClase(declaracionVariable);
+                    return CuerpoClase(declaracionVariable)
                 }
             }
         }
