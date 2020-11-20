@@ -39,7 +39,7 @@ class Metodo {
         this.identificadorMetodo = identificadorMetodo
         this.listaSentencias = listaSentencias
     }
-    override fun getArbolVisual() : TreeItem<String> {
+   fun getArbolVisual() : TreeItem<String> {
         val raiz = TreeItem("Metodo")
         raiz.children.add( TreeItem(tipoRetornno!!.lexema))
         raiz.children.add( TreeItem(identificadorMetodo!!.lexema) )

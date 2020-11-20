@@ -14,8 +14,7 @@ class Parametro {
         this.tipoDedato = tipoDedato
     }
 
-    val arbolVisual: TreeItem<String>
-        get() {
+    fun getArbolVisual() : TreeItem<String>{
             val raiz =TreeItem("Parametro")
             raiz.children.add(TreeItem<String>(identificadorVariable!!.lexema))
             raiz.children.add(TreeItem<String>(tipoDedato!!.lexema))
