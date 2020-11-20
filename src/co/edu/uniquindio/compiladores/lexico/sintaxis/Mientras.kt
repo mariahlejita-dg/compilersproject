@@ -5,7 +5,7 @@ import javafx.scene.control.TreeItem
 import java.util.ArrayList
 import javax.swing.tree.DefaultMutableTreeNode
 
-class Mientras {
+class Mientras : Sentencia{
 
     private var palabraReservada: Token?= null
     var expresionLogica: ExpresionLogica
@@ -40,8 +40,7 @@ class Mientras {
 
 
 
-    fun getArbolVisual() : TreeItem<String>
-    {
+    override fun getArbolVisual(): TreeItem<String>{
             val raiz = TreeItem("Mientras")
             raiz.children.add(expresionLogica.getArbolVisual())
             if (listaSentencias != null) {
