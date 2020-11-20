@@ -44,35 +44,37 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
         tablaErrores.add(ErrorSintactico(mensaje, fila, columna))
     }
     
-    fun esUnidadCompilacion() : UnidadDeCompilacion {
-        var paquete : Paquete = esPaquete()
-        if(paquete != null){
-            print(paquete.nombrePaquete)
-            var importaciones : ArrayList<Importacion> = esListaImportaciones()
-            if(importaciones != null){
-                var clase : Clase = esClase()
-                if(clase != null){
-                    obtenerSiguienteToken()
-                    return UnidadDeCompilacion(paquete, importaciones, clase)
-                }else {
-                    reportarError("Falta la clase en UC", tokenActual.fila, tokenActual.columna)
-                }
+    fun esUnidadCompilacion() : UnidadDeCompilacion? {
+        val paquete : Paquete = esPaquete()
+        print(paquete.nombrePaquete)
+        var importaciones : ArrayList<Importacion> = esListaImportaciones()
+        print(importaciones.size)
+        if(importaciones.size > 0){
+            val clase : Clase? = esClase()
+            print(clase)
+            if(clase != null){
+                obtenerSiguienteToken()
+                return UnidadDeCompilacion(paquete, importaciones, clase)
             }else {
-                var clase : Clase = esClase()
-                if(clase != null){
-                    obtenerSiguienteToken()
-                    return UnidadDeCompilacion(paquete, clase)
-                }else {
-                    reportarError("Falta clase en UC", tokenActual.fila, tokenActual.columna)
-                }
+                reportarError("Falta la clase en UC", tokenActual.fila, tokenActual.columna)
+            }
+        }else {
+            val clase1 : Clase? = esClase()
+            print(clase1)
+            if(clase1 != null){
+                obtenerSiguienteToken()
+                return UnidadDeCompilacion(paquete, clase1)
+            }else {
+                reportarError("Falta clase en UC", tokenActual.fila, tokenActual.columna)
             }
         }
 
-        return null!!
+        return null
     }
 
-    private fun esClase(): Clase {
+    private fun esClase(): Clase? {
         var modificador : Token? = null
+        modificador = esModificador()
         if(modificador != null){
             obtenerSiguienteToken()
             if(tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema =="CLASE"){
@@ -83,11 +85,12 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                     obtenerSiguienteToken()
                     if(tokenActual.categoria == Categoria.AGRUPADORES_APERTURA && tokenActual.lexema == ".{"){
                         obtenerSiguienteToken()
-                        var cuerpoClase : CuerpoClase = esCuerpoClase()
-                        if(cuerpoClase != null){
+                        var cuerpo : CuerpoClase? = esCuerpoClase()
+                        if(cuerpo != null){
                             if(tokenActual.categoria == Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".}"){
                                 obtenerSiguienteToken()
-                                return Clase(modificador, clase, identificadorClase, cuerpoClase)
+                                return Clase(modificador, clase, identificadorClase, cuerpo)
+
                             }else {
                                 reportarError(
                                     "Falta simbolo de cierre .} en clase",
@@ -95,17 +98,19 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                                     tokenActual.columna
                                 )
                             }
-                        }
-                        if (tokenActual.categoria == Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".}") {
+                        }else {
+                            if (tokenActual.categoria == Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".}") {
 
-                            obtenerSiguienteToken();
-                            return Clase(modificador, clase, identificadorClase);
-                        } else {
-                            reportarError(
-                                "Falta el simbolo de cierre } en clase", tokenActual.fila,
-                                tokenActual.columna
-                            );
+                                obtenerSiguienteToken();
+                                return Clase(modificador, clase, identificadorClase);
+                            } else {
+                                reportarError(
+                                    "Falta el simbolo de cierre } en clase", tokenActual.fila,
+                                    tokenActual.columna
+                                );
+                            }
                         }
+
                     } else {
                         reportarError(
                             "Falta el simbolo de apertura { en clase", tokenActual.fila,
@@ -124,18 +129,18 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
             }
 
         }
-        return null!!
+        return null
     }
 
-    private fun esCuerpoClase(): CuerpoClase {
+    private fun esCuerpoClase(): CuerpoClase? {
 
         var posInicial: Int = posActual;
-        var metodo:Metodo = esMetodo();
+        var metodo:Metodo? = esMetodo();
 
         if (metodo != null) {
 
             obtenerSiguienteToken()
-            var cuerpoClase:CuerpoClase = esCuerpoClase();
+            var cuerpoClase:CuerpoClase? = esCuerpoClase();
             if (cuerpoClase != null) {
                 return CuerpoClase(metodo, cuerpoClase);
             } else {
@@ -143,10 +148,10 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
             }
         } else {
             hacerBactracking(posInicial);
-            var declaracionVariable : DeclaracionVariable = esDeclaracionVariable() as DeclaracionVariable
+            val declaracionVariable : DeclaracionVariable = esDeclaracionVariable() as DeclaracionVariable
             if (declaracionVariable != null) {
 
-                var cuerpoClase1 : CuerpoClase = esCuerpoClase();
+                val cuerpoClase1 : CuerpoClase? = esCuerpoClase();
                 if (cuerpoClase1 != null) {
                     return CuerpoClase(declaracionVariable, cuerpoClase1)
                 } else {
@@ -154,10 +159,10 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                 }
             }
         }
-        return null!!
+        return null
     }
 
-    fun esDeclaracionVariable(): Sentencia {
+    fun esDeclaracionVariable(): Sentencia? {
         val posInicial = posActual
         if (tokenActual.categoria === Categoria.IDENTIFICADOR_VARIABLE) {
             val identificadorVariable = tokenActual
@@ -179,12 +184,12 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                 }
             }
         }
-        return null!!
+        return null
     }
 
 
 
-    private fun esMetodo(): Metodo {
+    private fun esMetodo(): Metodo? {
         var modificador : Token ?= null;
         var tipoRetorno : Token ?= null;
         modificador = esModificador();
@@ -251,7 +256,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                 reportarError("Falta tipo de retorno en metodo", tokenActual.fila, tokenActual.columna);
             }
         }
-        return null!!
+        return null
     }
 
     private fun esListaSentencias(): ArrayList<Sentencia> {
@@ -269,7 +274,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
     }
 
     private fun esSentencia(): Sentencia {
-        var sentencia : Sentencia
+        var sentencia : Sentencia?
 
         sentencia = esSentenciaMientras();
         if (sentencia != null) {
@@ -543,7 +548,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
 
     private fun esListaImportaciones(): ArrayList<Importacion> {
         var importaciones : ArrayList<Importacion> = ArrayList()
-        var f : Importacion = esImportacion()
+        var f : Importacion? = esImportacion()
         while(f != null){
             importaciones.add(f)
             f = esImportacion()
@@ -551,7 +556,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
         return importaciones
     }
 
-    private fun esImportacion(): Importacion {
+    private fun esImportacion(): Importacion? {
         if(tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "IMPORTAR"){
             var palabrareservadaimportar : Token = tokenActual
             obtenerSiguienteToken()
@@ -583,7 +588,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                 reportarError("Falta el nombre del paquete en importacion", tokenActual.fila, tokenActual.columna)
             }
         }
-        return null!!
+        return null
     }
 
     private fun esPaquete(): Paquete {

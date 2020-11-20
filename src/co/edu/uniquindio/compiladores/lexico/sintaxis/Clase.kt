@@ -28,6 +28,7 @@ class Clase  {
             raiz.children.add( cuerpoClase!!.getArbolVisual() )
             return raiz
         }
+        raiz.children.add( TreeItem(identificador_clase!!.lexema))
         return raiz
     }
 }
