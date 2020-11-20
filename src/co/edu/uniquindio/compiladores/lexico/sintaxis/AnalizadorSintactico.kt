@@ -138,7 +138,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
             }
         } else {
             hacerBactracking(posInicial);
-            var declaracionVariable : DeclaracionVariable = esDeclaracionVariable();
+            var declaracionVariable : Sentencia = esDeclaracionVariable()
             if (declaracionVariable != null) {
 
                 var cuerpoClase1 : CuerpoClase = esCuerpoClase();
@@ -152,7 +152,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
         return null!!
     }
 
-    fun esDeclaracionVariable(): DeclaracionVariable? {
+    fun esDeclaracionVariable(): Sentencia {
         val posInicial = posActual
         if (tokenActual.categoria === Categoria.IDENTIFICADOR_VARIABLE) {
             val identificadorVariable = tokenActual
@@ -174,14 +174,14 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                 }
             }
         }
-        return null
+        return null!!
     }
 
 
 
     private fun esMetodo(): Metodo {
         var modificador : Token ?= null;
-        var tipoRetorno : Token = null;
+        var tipoRetorno : Token ?= null;
         modificador = esModificador();
         if (modificador != null) {
 
@@ -293,7 +293,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
 
         }
 
-        sentencia = esDeclaracionVariable();
+        sentencia = esDeclaracionVariable()
         if (sentencia != null) {
             return sentencia;
 
@@ -603,7 +603,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
         return null!!
     }
 
-    fun esAsignacion(): Asignacion? {
+    fun esAsignacion(): Sentencia {
         val tipoDato = esTipoDato()
         if (tipoDato != null) {
             obtenerSiguienteToken()
@@ -631,7 +631,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
         }
         return null
     }
-    fun esInvocacionMetodo(): InvocacionMetodo? {
+    fun esInvocacionMetodo(): Sentencia {
         if (tokenActual.categoria === Categoria.IDENTIFICADOR_CLASE) {
             val identificadorClase = tokenActual
             obtenerSiguienteToken()
@@ -680,7 +680,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
         }
         return null
     }
-    fun esImpresion(): Impresion? {
+    fun esImpresion(): Sentencia {
         val palabraReservada = tokenActual
         if (palabraReservada.categoria === Categoria.PALABRA_RESERVADA
             && palabraReservada.lexema == "IMPRIMIR"
@@ -719,7 +719,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
         }
         return null
     }
-    fun esSentenciaRetorno(): Retorno? {
+    fun esSentenciaRetorno(): Sentencia {
         if (tokenActual.categoria === Categoria.PALABRA_RESERVADA && tokenActual.lexema == "RETORNO") {
             val retorno = tokenActual
             obtenerSiguienteToken()
@@ -737,7 +737,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
         }
         return null
     }
-    fun esSentenciaMientras(): Mientras? {
+    fun esSentenciaMientras(): Sentencia {
         if (tokenActual.categoria === Categoria.PALABRA_RESERVADA && tokenActual.lexema == "MIENTRAS") {
             val mientras = tokenActual
             obtenerSiguienteToken()
@@ -867,7 +867,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
     /**
      * <TipoDato> ::= ENTERO | CADENA | REAL|BOOLEANO
     </TipoDato> */
-    fun esTipoDato(): Token? {
+    fun esTipoDato(): Token {
         if (tokenActual.categoria === Categoria.PALABRA_RESERVADA) {
             if (tokenActual.lexema == "ENTERO" || tokenActual.lexema == "CADENA" || tokenActual.lexema == "REAL" || tokenActual.lexema == "BOOLEANO") {
                 return tokenActual
@@ -879,7 +879,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
     /*
 	 * <ListaParametros>::=<Parametro>|[<ListaParametros>]
 	 */
-    fun esListaParametros(): ArrayList<Parametro>? {
+    fun esListaParametros(): ArrayList<Parametro> {
         val parametros = ArrayList<Parametro>()
         var p = esParametro()
         while (p != null) {

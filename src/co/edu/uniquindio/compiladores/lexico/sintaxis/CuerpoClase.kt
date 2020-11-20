@@ -17,7 +17,12 @@ class CuerpoClase  {
         this.cuerpoClase = cuerpoClase
     }
 
-
+    constructor(metodo : Metodo):this(){
+        this.metodo = metodo
+    }
+    constructor(declaracionVariable: DeclaracionVariable):this(){
+        this.declaracionVariable = declaracionVariable
+    }
     fun getArbolVisual() : TreeItem<String>{
         val raiz = TreeItem( "Cuerpo clase")
         if (metodo != null){
