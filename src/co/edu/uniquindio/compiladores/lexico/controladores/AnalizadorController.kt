@@ -2,6 +2,7 @@ package co.edu.uniquindio.compiladores.lexico.controladores
 
 import co.edu.uniquindio.compiladores.lexico.lexico.AnalizadorLexico
 import co.edu.uniquindio.compiladores.lexico.lexico.Token
+import co.edu.uniquindio.compiladores.lexico.sintaxis.AnalizadorSintactico
 import co.edu.uniquindio.compiladores.lexico.sintaxis.ErrorSintactico
 import javafx.collections.FXCollections
 import javafx.event.ActionEvent
@@ -178,9 +179,17 @@ class AnalizadorController: Initializable {
             print(lexicoA.listaSimbolos)
             tablaSimbolos.items =FXCollections.observableArrayList(lexicoA.listaSimbolos)
             tableErrores.items = FXCollections.observableArrayList(lexicoA.listaErrores)
+            if(lexicoA.listaErrores.size == 0){
+                val sintaxisA = AnalizadorSintactico(lexicoA.listaSimbolos)
+                val uc = sintaxisA.esUnidadCompilacion()
+                //TreeVisual.root(TreeItem(uc!!.getArbolVisual()))
+                print(uc!!.getArbolVisual())
+            }
 
         }
     }
 
 
 }
+
+

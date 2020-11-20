@@ -16,9 +16,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
     var tokenActual = tablaToken.get(posActual)
     var unidadDeCompilacion : UnidadDeCompilacion ?= null
     
-    fun analizar(){
-        
-    }
+
 
     /**
      * Metodo para volver a una instancia anterior del codigo
@@ -46,9 +44,10 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
         tablaErrores.add(ErrorSintactico(mensaje, fila, columna))
     }
     
-    fun esUnidadCompilacion() : UnidadDeCompilacion? {
+    fun esUnidadCompilacion() : UnidadDeCompilacion {
         var paquete : Paquete = esPaquete()
         if(paquete != null){
+            print(paquete.nombrePaquete)
             var importaciones : ArrayList<Importacion> = esListaImportaciones()
             if(importaciones != null){
                 var clase : Clase = esClase()
@@ -67,11 +66,9 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                     reportarError("Falta clase en UC", tokenActual.fila, tokenActual.columna)
                 }
             }
-        }else {
-            reportarError("Falta paquete en UC", tokenActual.fila, tokenActual.columna)
         }
 
-        return null
+        return null!!
     }
 
     private fun esClase(): Clase {
@@ -168,7 +165,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
             val tipoDato: Token = esTipoDato()
             if (tipoDato != null) {
                 obtenerSiguienteToken()
-                if (tokenActual.categoria === Categoria.IDENTIFICADOR_TERMINAL) {
+                if (tokenActual.categoria === Categoria.FINCODIGO) {
                     obtenerSiguienteToken()
                     return DeclaracionVariable(identificadorVariable, tipoDato)
                 } else {
@@ -556,7 +553,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
 
     private fun esImportacion(): Importacion {
         if(tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "IMPORTAR"){
-            var palabra_reservada_importar : Token = tokenActual
+            var palabrareservadaimportar : Token = tokenActual
             obtenerSiguienteToken()
             if(tokenActual.categoria == Categoria.CADENA_CARACTERES){
                 var nombrePaquete : String = tokenActual.lexema
@@ -564,11 +561,11 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                 if(tokenActual.categoria == Categoria.PUNTO){
                     obtenerSiguienteToken()
                     if(tokenActual.categoria == Categoria.IDENTIFICADOR_CLASE){
-                        var identificador_clase : Token = tokenActual
+                        var identificadorclase : Token = tokenActual
                         obtenerSiguienteToken()
-                        if(tokenActual.categoria == Categoria.IDENTIFICADOR_TERMINAL){
+                        if(tokenActual.categoria == Categoria.FINCODIGO){
                             obtenerSiguienteToken()
-                            return Importacion(palabra_reservada_importar, nombrePaquete, identificador_clase)
+                            return Importacion(palabrareservadaimportar, nombrePaquete, identificadorclase)
                         }else {
                             reportarError("Falta el terminal % en importacion", tokenActual.fila, tokenActual.columna)
                         }
@@ -597,7 +594,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
             if(tokenActual.categoria == Categoria.CADENA_CARACTERES){
                 var nombrePaquete : String = tokenActual.lexema
                 obtenerSiguienteToken()
-                if(tokenActual.categoria == Categoria.IDENTIFICADOR_TERMINAL){
+                if(tokenActual.categoria == Categoria.FINCODIGO){
                     obtenerSiguienteToken()
                     return Paquete(paquete, nombrePaquete)
                 }else {
@@ -622,7 +619,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                     obtenerSiguienteToken()
                     val expresion = esExpresion()
                     if (expresion != null) {
-                        if (tokenActual.categoria === Categoria.IDENTIFICADOR_TERMINAL) {
+                        if (tokenActual.categoria === Categoria.FINCODIGO) {
                             obtenerSiguienteToken()
                             return Asignacion(tipoDato, identificadorVariable, operador, expresion)
                         } else {
@@ -651,7 +648,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                         obtenerSiguienteToken()
                         if (tokenActual.categoria === Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".)") {
                             obtenerSiguienteToken()
-                            if (tokenActual.categoria === Categoria.IDENTIFICADOR_TERMINAL) {
+                            if (tokenActual.categoria === Categoria.FINCODIGO) {
                                 obtenerSiguienteToken()
                                 return InvocacionMetodo(identificadorClase, identificadorMetodo)
                             } else {
@@ -702,7 +699,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                     if (parDer.categoria === Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".)") {
                         obtenerSiguienteToken()
                         val finSentencia = tokenActual
-                        if (finSentencia.categoria === Categoria.IDENTIFICADOR_TERMINAL) {
+                        if (finSentencia.categoria === Categoria.FINCODIGO) {
                             obtenerSiguienteToken()
                             return Impresion(palabraReservada, exp)
                         } else {
@@ -732,7 +729,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
             obtenerSiguienteToken()
             val termino = esTermino()
             if (termino != null) {
-                if (tokenActual.categoria === Categoria.IDENTIFICADOR_TERMINAL) {
+                if (tokenActual.categoria === Categoria.FINCODIGO) {
                     obtenerSiguienteToken()
                     return Retorno(retorno, termino)
                 } else {
@@ -911,7 +908,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                 val id = tokenActual
                 obtenerSiguienteToken()
                 val terminal = tokenActual
-                if (terminal.categoria === Categoria.IDENTIFICADOR_TERMINAL) {
+                if (terminal.categoria === Categoria.FINCODIGO) {
                     obtenerSiguienteToken()
                     return Leer(id)
                 } else {
