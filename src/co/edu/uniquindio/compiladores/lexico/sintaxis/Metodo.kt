@@ -1,6 +1,7 @@
 package co.edu.uniquindio.compiladores.lexico.sintaxis
 
 import co.edu.uniquindio.compiladores.lexico.lexico.Token
+import javafx.scene.control.TreeItem
 import javax.smartcardio.CardTerminal
 
 class Metodo {
@@ -38,5 +39,21 @@ class Metodo {
         this.identificadorMetodo = identificadorMetodo
         this.listaSentencias = listaSentencias
     }
+    override fun getArbolVisual() : TreeItem<String> {
+        val raiz = TreeItem("Metodo")
+        raiz.children.add( TreeItem(tipoRetornno!!.lexema))
+        raiz.children.add( TreeItem(identificadorMetodo!!.lexema) )
 
+        if( listaParametros != null){
+            for (item in listaParametros){
+                raiz.children.add( item.getArbolVisual() )
+            }
+        }
+        if( listaSentencias != null){
+            for (i in listaSentencias){
+                raiz.children.add( i.getArbolVisual() )
+            }
+        }
+        return raiz
+    }
 }
