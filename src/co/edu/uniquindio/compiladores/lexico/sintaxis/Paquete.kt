@@ -15,7 +15,7 @@ class Paquete {
      * @param palabra_reservada
      * @param nombrePaquete
      */
-    constructor(palabra_reservada: Token, nombrePaquete: String, identificador_terminal: Token){
+    constructor(palabra_reservada: Token, nombrePaquete: String){
         this.palabra_reservada = palabra_reservada
         this.nombrePaquete = nombrePaquete
     }
