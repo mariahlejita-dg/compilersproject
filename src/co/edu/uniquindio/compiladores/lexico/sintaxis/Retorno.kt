@@ -10,9 +10,9 @@ class Retorno {
     private var termino: Termino? = null
     private var terminal: Token? = null
 
-    constructor(palabra_reservada: Token, termino: Termino,terminal: Token {
+    constructor(palabra_reservada: Token, termino: Termino,terminal: Token ){
 
-        this.palabra_reservada = palabra_reservada:
+        this.palabra_reservada = palabra_reservada
         this.termino = termino
     }
 
