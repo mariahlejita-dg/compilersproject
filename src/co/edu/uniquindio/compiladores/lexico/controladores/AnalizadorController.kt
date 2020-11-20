@@ -175,15 +175,13 @@ class AnalizadorController: Initializable {
         if(txtCodigo.text.length > 0){
             val lexicoA = AnalizadorLexico(txtCodigo.text)
             lexicoA.analizar()
-            print(lexicoA.listaErrores)
-            print(lexicoA.listaSimbolos)
             tablaSimbolos.items =FXCollections.observableArrayList(lexicoA.listaSimbolos)
             tableErrores.items = FXCollections.observableArrayList(lexicoA.listaErrores)
             if(lexicoA.listaErrores.size == 0){
                 val sintaxisA = AnalizadorSintactico(lexicoA.listaSimbolos)
                 val uc = sintaxisA.esUnidadCompilacion()
-                //TreeVisual.root(TreeItem(uc!!.getArbolVisual()))
-                print(uc!!.getArbolVisual())
+                //TreeVisual.root(TreeItem(uc?.getArbolVisual()))
+                print(uc)
             }
 
         }
