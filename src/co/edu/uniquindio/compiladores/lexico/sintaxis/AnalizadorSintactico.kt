@@ -4,6 +4,10 @@ import co.edu.uniquindio.compiladores.lexico.lexico.Categoria
 import co.edu.uniquindio.compiladores.lexico.lexico.Token
 import java.util.*
 
+/**
+ * @author María Alejandra Naranjo Martinez
+ * @author Fabio Augusto Vanegas
+ */
 
 class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
     var tablaErrores :ArrayList<ErrorSintactico> = ArrayList<ErrorSintactico>()
@@ -25,6 +29,10 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
         posActual = posInicial
         tokenActual = tablaSimbolos[posActual]
     }
+
+    /**
+     *
+     */
     fun obtenerSiguienteToken(){
         if(posActual < tablaSimbolos.size - 1){
             posActual++
@@ -318,7 +326,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
             return sentencia;
 
         }
-        return null;
+        return null!!
     }
 
 
@@ -378,13 +386,13 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                     reportarError("Falta una expresion relacional en SI", tokenActual.fila, tokenActual.columna);
                 }
             } else {
-                reportarError("Falta el simbolo de apertura <- en SI", tokenActual.fila, tokenActual.getColumna());
+                reportarError("Falta el simbolo de apertura <- en SI", tokenActual.fila, tokenActual.columna);
             }
         }
         return null!!
     }
 
-    fun esExpresionRelacional(): ExpresionRelacional? {
+    private fun esExpresionRelacional(): ExpresionRelacional {
         val expAritmetica: ExpresionAritmetica? = esExpresionAritmetica()
         if (expAritmetica != null) {
             //obtenerSgteToken();
@@ -417,7 +425,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                 reportarError("Falta operador Cadena en ER", tokenActual.fila, tokenActual.columna)
             }
         }
-        return null
+        return null!!
     }
 
     fun esExpresion(): Expresion? {
@@ -495,14 +503,13 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                 if (tokenActual.categoria === Categoria.OPERADOR_RELACIONAL || tokenActual.categoria === Categoria.CONCATENACION) {
                     hacerBactracking(posInicial)
                 }
-                //obtenerSgteToken();
                 return ExpresionAritmetica(term1)
             }
         }
         return null
     }
 
-    fun esTermino(): Termino? {
+    fun esTermino(): Termino {
         val termino: Token
         if (tokenActual.categoria === Categoria.IDENTIFICADOR_VARIABLE) {
             termino = tokenActual
@@ -517,7 +524,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
             obtenerSiguienteToken()
             return Termino(termino)
         }
-        return null
+        return null!!
     }
 
 
@@ -629,7 +636,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
             }
             reportarError("Falta el identificafor de variable en asignacion ", tokenActual.fila, tokenActual.columna)
         }
-        return null
+        return null!!
     }
     fun esInvocacionMetodo(): Sentencia {
         if (tokenActual.categoria === Categoria.IDENTIFICADOR_CLASE) {
@@ -678,7 +685,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                 )
             }
         }
-        return null
+        return null!!
     }
     fun esImpresion(): Sentencia {
         val palabraReservada = tokenActual
@@ -717,7 +724,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                 )
             }
         }
-        return null
+        return null!!
     }
     fun esSentenciaRetorno(): Sentencia {
         if (tokenActual.categoria === Categoria.PALABRA_RESERVADA && tokenActual.lexema == "RETORNO") {
@@ -735,7 +742,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                 reportarError("Falta termino en retorno", tokenActual.fila, tokenActual.columna)
             }
         }
-        return null
+        return null!!
     }
     fun esSentenciaMientras(): Sentencia {
         if (tokenActual.categoria === Categoria.PALABRA_RESERVADA && tokenActual.lexema == "MIENTRAS") {
@@ -785,7 +792,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                 reportarError("Falta el simbolo de apertura <- en SM", tokenActual.fila, tokenActual.columna)
             }
         }
-        return null
+        return null!!
     }
 
     /**
@@ -818,7 +825,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
 	 * * <SentenciaIncremento>::=<IdentificadorVariable><Incremento>
 	 *
 	 */
-    fun esIncremento(): SentenciaIncremento? {
+    fun esIncremento(): Sentencia {
         if (tokenActual.categoria === Categoria.IDENTIFICADOR_VARIABLE) {
             val identificador = tokenActual
             obtenerSiguienteToken()
@@ -830,14 +837,14 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                 reportarError("Falta el operador de incremento  ", tokenActual.fila, tokenActual.columna)
             }
         }
-        return null
+        return null!!
     }
 
     /*
 	 * <SentenciaDecremento>::=<IdentificadorVariable><Decremento>
 	 *
 	 */
-    fun esDecremento(): SentenciaDecremento? {
+    fun esDecremento(): SentenciaDecremento {
         if (tokenActual.categoria === Categoria.IDENTIFICADOR_VARIABLE) {
             val identificador = tokenActual
             obtenerSiguienteToken()
@@ -849,7 +856,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                 reportarError("Falta el operador de decremento  ", tokenActual.fila, tokenActual.columna)
             }
         }
-        return null
+        return null!!
     }
 
     /**
@@ -873,7 +880,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                 return tokenActual
             }
         }
-        return null
+        return null!!
     }
 
     /*
@@ -894,7 +901,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
      *
      * @return leer
     </leer> */
-    fun esLeer(): Leer? {
+    fun esLeer(): Leer {
         val palabraReservada = tokenActual
         if (palabraReservada.categoria === Categoria.PALABRA_RESERVADA
             && palabraReservada.lexema == "LEER"
@@ -914,7 +921,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
                 reportarError("Falta el idVariable en el leer", tokenActual.fila, tokenActual.columna)
             }
         }
-        return null
+        return null!!
     }
 
     /**

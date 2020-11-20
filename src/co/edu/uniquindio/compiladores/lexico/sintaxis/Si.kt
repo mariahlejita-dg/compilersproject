@@ -5,7 +5,7 @@ import javafx.scene.control.TreeItem
 import java.util.ArrayList
 
 
-class Si {
+class Si : Sentencia{
     private var si: Token? = null
     var expresion: ExpresionRelacional? = null
     var listaSentencias: ArrayList<Sentencia>? = null
@@ -31,8 +31,7 @@ class Si {
 
 
 
-    val arbolVisual: TreeItem<String>
-        get() {
+    override fun getArbolVisual(): TreeItem<String>{
             val raiz = TreeItem("Si")
             raiz.children.add(expresion!!.getArbolVisual())
             if (listaSentencias != null) {
