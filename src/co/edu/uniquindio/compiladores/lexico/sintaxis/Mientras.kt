@@ -1,6 +1,7 @@
 package co.edu.uniquindio.compiladores.lexico.sintaxis
 
 import co.edu.uniquindio.compiladores.lexico.lexico.Token
+import javafx.scene.control.TreeItem
 import java.util.ArrayList
 import javax.swing.tree.DefaultMutableTreeNode
 
@@ -39,16 +40,16 @@ class Mientras {
 
 
 
-    val arbolVisual: DefaultMutableTreeNode
+    val arbolVisual: TreeItem<String>
         get() {
-            val nodo = DefaultMutableTreeNode("Mientras")
-            nodo.add(expresionLogica.arbolVisual)
+            val raiz = TreeItem("Mientras")
+            raiz.children.add(expresionLogica.getArbolVisual())
             if (listaSentencias != null) {
                 for (sentencia in listaSentencias!!) {
-                    nodo.add(sentencia.getArbolVisual())
+                    raiz.children.add(sentencia.getArbolVisual())
                 }
             }
-            return nodo
+            return raiz
         }
 
     override fun analizarSemantica(error: ArrayList<String?>?, tS: TablaSimbolos?, ambito: Simbolo?) {
@@ -59,19 +60,5 @@ class Mientras {
         // TODO Auto-generated method stub
     }
 
-    override fun traducir(): String {
-        val code = "while"
-        var sent = ""
-        for (i in listaSentencias!!.indices) {
-            if (i == listaSentencias!!.size - 1) {
-                sent += listaSentencias!![i].traducir()
-            } else {
-                sent += listaSentencias!![i].traducir().toString() + ", "
-            }
-        }
-        return """$code (${expresionLogica.traducir()} ) {
-$sent
- }"""
-    }
 
 }

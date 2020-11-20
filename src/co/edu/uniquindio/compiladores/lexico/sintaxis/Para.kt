@@ -15,10 +15,10 @@ class Para {
 
 
 
-    val arbolVisual: DefaultMutableTreeNode
+    val arbolVisual: TreeItem<String>
         get() {
             val raiz = TreeItem("Para")
-            if(expresion!!)
+            raiz.children.add(expresion!!.getArbolVisual())
             if (decremento != null) {
                 if (listaSentencias != null) {
                     for (sentencia in listaSentencias!!) {
