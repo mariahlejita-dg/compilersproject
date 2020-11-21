@@ -18,7 +18,6 @@ import java.io.*
 import java.net.URL
 import java.util.*
 import javax.swing.JFileChooser
-import javax.swing.JOptionPane
 import javax.swing.filechooser.FileNameExtensionFilter
 
 
@@ -45,7 +44,7 @@ class AnalizadorController: Initializable {
     @FXML lateinit var columFilaSintaxis : TableColumn<ErrorSintactico,String>
     @FXML lateinit var columColunmnaSintaxis : TableColumn<ErrorSintactico,String>
 
-    @FXML lateinit var TreeVisual : TreeView<String>
+    @FXML lateinit var treeVisual : TreeView<String>
 
     lateinit var fichero : File
     var guardado : Boolean = false
@@ -180,7 +179,7 @@ class AnalizadorController: Initializable {
             if(lexicoA.listaErrores.size == 0){
                 val sintaxisA = AnalizadorSintactico(lexicoA.listaSimbolos)
                 val uc = sintaxisA.esUnidadCompilacion()
-                //TreeVisual.root(TreeItem(uc?.getArbolVisual()))
+                //treeVisual.root(TreeItem(uc?.getArbolVisual()))
                 print(uc)
             }
 

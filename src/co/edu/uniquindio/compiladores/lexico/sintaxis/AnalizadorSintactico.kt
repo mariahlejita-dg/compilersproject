@@ -45,8 +45,8 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
     }
     
     fun esUnidadCompilacion() : UnidadDeCompilacion? {
-        val paquete : Paquete = esPaquete()
-        print(paquete.nombrePaquete)
+        val paquete : Paquete?= esPaquete()
+        //print(paquete.nombrePaquete)
         var importaciones : ArrayList<Importacion> = esListaImportaciones()
         print(importaciones.size)
         if(importaciones.size > 0){
@@ -531,7 +531,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
 
 
 
-    private fun esTipoRetorno(): Token {
+    private fun esTipoRetorno(): Token? {
         if (tokenActual.categoria == Categoria.PALABRA_RESERVADA) {
 
             if (tokenActual.lexema == "ENTERO" || tokenActual.lexema == "CADENA"
@@ -591,28 +591,27 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
         return null
     }
 
-    private fun esPaquete(): Paquete {
-
-        if(tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "PAQUETE"){
-            var paquete : Token = tokenActual
+    fun esPaquete(): Paquete? {
+        if (tokenActual.categoria === Categoria.PALABRA_RESERVADA && tokenActual.lexema == "PAQUETE") {
+            val paquete = tokenActual
             obtenerSiguienteToken()
-            if(tokenActual.categoria == Categoria.CADENA_CARACTERES){
-                var nombrePaquete : String = tokenActual.lexema
+            if (tokenActual.categoria === Categoria.CADENA_CARACTERES) {
+                val nombrePaquete = tokenActual.lexema
                 obtenerSiguienteToken()
-                if(tokenActual.categoria == Categoria.FINCODIGO){
+                if (tokenActual.categoria === Categoria.IDENTIFICADOR_TERMINAL) {
                     obtenerSiguienteToken()
                     return Paquete(paquete, nombrePaquete)
-                }else {
+                } else {
                     reportarError("Falta el terminal % en paquete", tokenActual.fila, tokenActual.columna)
                 }
-            }else {
-                reportarError("Falta nombre del paquete", tokenActual.fila, tokenActual.columna)
+            } else {
+                reportarError("Falta el nombre del paquete", tokenActual.fila, tokenActual.columna)
             }
         }
-        return null!!
+        return null
     }
 
-    fun esAsignacion(): Sentencia {
+    fun esAsignacion(): Sentencia? {
         val tipoDato = esTipoDato()
         if (tipoDato != null) {
             obtenerSiguienteToken()
@@ -640,7 +639,7 @@ class AnalizadorSintactico(tablaToken: ArrayList<Token>) {
         }
         return null!!
     }
-    fun esInvocacionMetodo(): Sentencia {
+    fun esInvocacionMetodo(): Sentencia? {
         if (tokenActual.categoria === Categoria.IDENTIFICADOR_CLASE) {
             val identificadorClase = tokenActual
             obtenerSiguienteToken()

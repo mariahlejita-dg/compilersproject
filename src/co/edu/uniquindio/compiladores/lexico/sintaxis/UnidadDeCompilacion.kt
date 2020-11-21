@@ -9,12 +9,12 @@ class UnidadDeCompilacion {
     private var listaImportaciones: ArrayList<Importacion>? = null
     private var clase: Clase? = null
     constructor()
-    constructor(paquete: Paquete,listaImportaciones: ArrayList<Importacion>,clase: Clase):this(){
+    constructor(paquete: Paquete?, listaImportaciones: ArrayList<Importacion>, clase: Clase):this(){
         this.paquete = paquete
         this.listaImportaciones = listaImportaciones
         this.clase = clase
     }
-    constructor(paquete: Paquete,clase: Clase):this(){
+    constructor(paquete: Paquete?, clase: Clase):this(){
         this.paquete = paquete
         this.clase = clase
     }
