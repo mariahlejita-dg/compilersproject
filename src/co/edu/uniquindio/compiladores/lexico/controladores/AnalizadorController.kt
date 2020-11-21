@@ -177,16 +177,33 @@ class AnalizadorController: Initializable {
             tablaSimbolos.items =FXCollections.observableArrayList(lexicoA.listaSimbolos)
             tableErrores.items = FXCollections.observableArrayList(lexicoA.listaErrores)
             if(lexicoA.listaErrores.size == 0){
+
                 val sintaxisA = AnalizadorSintactico(lexicoA.listaSimbolos)
                 val uc = sintaxisA.esUnidadCompilacion()
-                //treeVisual.root(TreeItem(uc?.getArbolVisual()))
-                print(uc)
+                if (uc != null) {
+
+                    treeVisual.root = uc.getArbolVisual()
+
+
+                }
+            }else{
+
+                var alerta = Alert(Alert.AlertType.WARNING)
+
+                alerta.headerText= "Mensaje"
+
+                alerta.contentText="Hay errores lexicos en el codigo fuente"
+
+
+            }
+                }
+
             }
 
         }
-    }
 
 
-}
+
+
 
 

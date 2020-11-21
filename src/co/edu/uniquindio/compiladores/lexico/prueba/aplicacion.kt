@@ -9,7 +9,7 @@ fun main (){
     lexico.analizar()
     //print(lexico.listaTokens)
     val sintaxis= AnalizadorSintactico(lexico.listaSimbolos)
-    print (sintaxis.esUnidadCompilacion())
+    //print (sintaxis.esUnidadCompilacion())
 
 
 }
