@@ -3,7 +3,6 @@ package co.edu.uniquindio.compiladores.lexico.lexico
 enum class Categoria {
 
     ENTERO,
-    SALTO_DE_LINEA,
     REAL,
     CADENA_CARACTERES,
     CARACTER,
@@ -19,14 +18,12 @@ enum class Categoria {
     IDENTIFICADOR_METODO,
     IDENTIFICADOR_CLASE,
     IDENTIFICADOR_VARIABLE,
-    IDENTIFICADOR_INICIALIZADOR,
     IDENTIFICADOR_TERMINAL,
     SEPARADOR_SENTENCIA,
     CONCATENACION,
     COMENTARIO_LINEA,
     COMENTARIO_BLOQUE,
     PUNTO,
-    ERROR,
     INCREMENTO,
     DECREMENTO,
     FINCODIGO

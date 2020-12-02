@@ -10,4 +10,5 @@ class DeclaracionVariable (var identificadorVariable : Token, var tipoDato : Tok
         raiz.children.add( TreeItem(tipoDato.lexema) )
         return raiz
     }
+
 }

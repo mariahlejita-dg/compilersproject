@@ -7,7 +7,7 @@ class ExpresionAritmetica : Expresion {
     private var termino : Termino ?= null
     private var  operador : Token ?= null
     private var termino2 : Termino ?= null
-    private var expresionA : ExpresionAritmetica ?= null
+    private var expresionA : Expresion ?= null
     constructor()
     constructor(termino: Termino):this(){
         this.termino = termino
@@ -17,7 +17,7 @@ class ExpresionAritmetica : Expresion {
         this.operador = operador
         this.termino2 = termino2
     }
-    constructor(termino : Termino, operador : Token, expresionA: ExpresionAritmetica) : this(){
+    constructor(termino : Termino, operador : Token, expresionA: Expresion) : this(){
         this.termino = termino
         this.operador = operador
         this.expresionA = expresionA
