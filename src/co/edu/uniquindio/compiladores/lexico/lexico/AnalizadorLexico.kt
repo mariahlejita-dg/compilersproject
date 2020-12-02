@@ -1688,12 +1688,12 @@ class AnalizadorLexico(var codigo : String)  {
                             return true
                         }
                     } else {
-                        reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
-                        return true
+                        hacerBacktracking(posicionInicial)
+                        return false
                     }
                 } else {
-                    reportarError(lexema, filaInicial, columnaInicial, posicionInicial)
-                    return true
+                    hacerBacktracking(posicionInicial)
+                    return false
                 }
             } else {
                 hacerBacktracking(posicionInicial)

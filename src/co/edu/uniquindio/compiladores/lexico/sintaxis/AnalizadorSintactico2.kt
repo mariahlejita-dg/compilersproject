@@ -22,7 +22,6 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
     fun esUnidadDeCompilacion() : UnidadDeCompilacion? {
         val listaMetodos : ArrayList<Metodo> = esListaMetodos()
         return if (listaMetodos.size > 0){
-            print("Metodos: \n"+listaMetodos[0].getArbolVisual())
             UnidadDeCompilacion(listaMetodos)
         }else null
     }
@@ -53,17 +52,50 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
                         if (tokenActual.categoria == Categoria.DOS_PUNTOS){
                             obtenerSiguienteToken()
                             tipoRetorno = esTipoRetorno()
+                            print(tipoRetorno!!.lexema+"\n")
                             obtenerSiguienteToken()
-                            if(tipoRetorno == null){
-                                reportarError("Falta tipo retorno del metodo")
+                            if(tipoRetorno != null){
+                                print("entro\n")
+                                if(tipoRetorno.lexema == "NO-RETORNO"){
+                                    if(tokenActual.categoria == Categoria.AGRUPADORES_APERTURA && tokenActual.lexema == ".{"){
+                                        obtenerSiguienteToken()
+                                        val bloqueSentencias : ArrayList<Sentencia> = esBloqueSentencias()
+                                        if(bloqueSentencias != null){
+                                            print(""+bloqueSentencias.size + "\n")
+                                            if(tokenActual.categoria == Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".}"){
+                                                obtenerSiguienteToken()
+                                                return Metodo(nombre,parametros, tipoRetorno!!, bloqueSentencias,Termino(tipoRetorno))
+                                            }
+                                        }else {
+                                            reportarError("Faltó el bloque de sentencias en el metodo")
+                                        }
+                                    }else{
+                                        reportarError("Falta llave de apertura")
+                                    }
+                                }else{
+                                    if(tokenActual.categoria == Categoria.AGRUPADORES_APERTURA && tokenActual.lexema == ".{"){
+                                        obtenerSiguienteToken()
+                                        val bloqueSentencias : ArrayList<Sentencia> = esBloqueSentencias()
+                                        if(bloqueSentencias != null){
+                                            if(tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "RETORNO"){
+                                                obtenerSiguienteToken()
+                                                var termino : Termino? = esTermino()
+                                                if(termino != null){
+                                                    if(tokenActual.categoria == Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".}"){
+                                                        obtenerSiguienteToken()
+                                                        return Metodo(nombre,parametros, tipoRetorno!!, bloqueSentencias,termino)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }else {
+                                reportarError("Falta tipo de retorno")
                             }
+
                         }
-                        val bloqueSentencias : ArrayList<Sentencia> = esBloqueSentencias()
-                        if(bloqueSentencias != null){
-                            return Metodo(nombre,parametros, tipoRetorno!!, bloqueSentencias)
-                        }else {
-                            reportarError("Faltó el bloque de sentencias en el metodo")
-                        }
+
 
                     }else {
                         reportarError("Falta parentesis derecho")
@@ -82,7 +114,7 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         if (tokenActual.categoria == Categoria.PALABRA_RESERVADA) {
 
             if (tokenActual.lexema == "ENTERO" || tokenActual.lexema == "CADENA"
-                || tokenActual.lexema == "REAL" || tokenActual.lexema == "NORETORNO"
+                || tokenActual.lexema == "REAL" || tokenActual.lexema == "NO-RETORNO"
                 || tokenActual.lexema == "BOOLEANO"
             ) {
                 return tokenActual;
@@ -144,8 +176,7 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
     }
 
     fun esSentencia() : Sentencia? {
-        var sentencia : Sentencia?
-        sentencia = esAsignacion()
+        var sentencia : Sentencia? = esAsignacion()
         if(sentencia != null){
             return sentencia
         }
@@ -153,26 +184,30 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
     }
 
     fun esAsignacion() : Sentencia? {
-        var tipoDato : Token? = esTipoDato()
-        if(tipoDato != null){
-            if(tokenActual.categoria == Categoria.IDENTIFICADOR_VARIABLE){
-                var identificadorVariable = tokenActual
+        val tipoDato = esTipoDato()
+        if (tipoDato != null) {
+            obtenerSiguienteToken()
+            if (tokenActual.categoria === Categoria.IDENTIFICADOR_VARIABLE) {
+                val identificadorVariable = tokenActual
                 obtenerSiguienteToken()
-                if(tokenActual.categoria == Categoria.OPERADOR_ASIGNACION){
-                    var operador = tokenActual
+                if (tokenActual.categoria === Categoria.OPERADOR_ASIGNACION) {
+                    val operador = tokenActual
                     obtenerSiguienteToken()
-                    var expresion: Expresion? = esExpresion()
-                    if(expresion != null){
-                        return Asignacion(tipoDato, identificadorVariable, operador, expresion)
-                    }else {
-                        reportarError("Falta la expresión")
+                    val expresion = esExpresion()
+                    if (expresion != null) {
+                        if (tokenActual.categoria === Categoria.FINCODIGO) {
+                            obtenerSiguienteToken()
+                            return Asignacion(tipoDato, identificadorVariable, operador, expresion)
+                        } else {
+                            reportarError("Falta el terminal en asignacion ")
+                        }
+                    } else {
+                        reportarError("Falta la expresion en asignacion")
                     }
-                }else {
-                    reportarError("Falta operador de Asignacion")
                 }
-            }else {
-                reportarError("Falta el identificador de variable")
+                reportarError("Falta el operador de asignacion ")
             }
+            reportarError("Falta el identificafor de variable en asignacion ")
         }
         return null
     }
@@ -187,24 +222,27 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return expresion
     }
 
-    fun esExpresionAritmetica() : Expresion? {
-        var termino : Termino? = esTermino()
-        if(termino != null){
-            if(tokenActual.categoria == Categoria.OPERADOR_ARITMETICO){
+    fun esExpresionAritmetica() : ExpresionAritmetica? {
+        val term1: Termino? = esTermino()
+        if (term1 != null) {
+            // obtenerSgteToken();
+            if (tokenActual.categoria === Categoria.OPERADOR_ARITMETICO) {
                 val operAritm = tokenActual
                 obtenerSiguienteToken()
                 val term2: Termino? = esTermino()
                 if (term2 != null) {
-                    return ExpresionAritmetica(termino, operAritm, term2)
+                    return ExpresionAritmetica(term1, operAritm, term2)
                 } else if (tokenActual.categoria === Categoria.AGRUPADORES_APERTURA && tokenActual.lexema == ".(") {
                     val agruIzq = tokenActual
                     obtenerSiguienteToken()
-                    var exprArit: Expresion? = esExpresionAritmetica() as ExpresionAritmetica
+                    val exprArit: ExpresionAritmetica? = esExpresionAritmetica()
                     if (exprArit != null) {
+
+                        //obtenerSgteToken();
                         if (tokenActual.categoria === Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".)") {
                             val agruDer = tokenActual
                             obtenerSiguienteToken()
-                            return ExpresionAritmetica(termino, operAritm, exprArit)
+                            return ExpresionAritmetica(term1, operAritm, exprArit)
                         } else {
                             reportarError("Falta agrupador derecho en EA")
                         }
@@ -216,7 +254,7 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
                 }
             } else {
 
-                return ExpresionAritmetica(termino)
+                return ExpresionAritmetica(term1)
             }
         }
         return null

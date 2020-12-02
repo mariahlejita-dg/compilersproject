@@ -4,6 +4,7 @@ import co.edu.uniquindio.compiladores.lexico.lexico.Token
 import javafx.scene.control.TreeItem
 
 class Termino (var termino: Token) {
+
     fun getArbolVisual() : TreeItem<String> {
         val raiz = TreeItem( "Termino" )
         if( termino != null ){
