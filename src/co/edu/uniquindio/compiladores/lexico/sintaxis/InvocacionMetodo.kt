@@ -5,16 +5,20 @@ import javafx.scene.control.TreeItem
 
 class InvocacionMetodo :  Sentencia {
     private var identificadorClase  : Token ?= null
-    private var identificadorMetodo : Token ?= null
+    private var argumentos : ArrayList<Expresion> ?= null
 
-    constructor(identificadorClase : Token, identificadorMetodo : Token){
+    constructor(identificadorClase : Token, argumentos : ArrayList<Expresion>){
         this.identificadorClase = identificadorClase
-        this.identificadorMetodo = identificadorMetodo
+        this.argumentos = argumentos
     }
     override fun getArbolVisual() : TreeItem<String> {
         val raiz = TreeItem("Invocacion Metodo")
         raiz.children.add( TreeItem(identificadorClase!!.lexema) )
-        raiz.children.add( TreeItem(identificadorMetodo!!.lexema) )
+        if(argumentos!!.isNotEmpty()){
+            for (i in argumentos!!){
+                raiz.children.add(i.getArbolVisual())
+            }
+        }
         return raiz
     }
 }

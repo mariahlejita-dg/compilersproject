@@ -3,11 +3,19 @@ package co.edu.uniquindio.compiladores.lexico.sintaxis
 import co.edu.uniquindio.compiladores.lexico.lexico.Categoria
 import co.edu.uniquindio.compiladores.lexico.lexico.Token
 
+/**
+ * @author María Alejnandra Naranjo Martinez
+ * @author Fabio Augusto Vanegas
+ * Esta clase se encarga de realizar el proceso sintactico y revisar que la estructura de los elementos del lenguaje se encuentren de forma correcta
+ */
 class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
     var posicionActual = 0
     var tokenActual = listaTokens[posicionActual]
     var listaErrores =  ArrayList<ErrorSintactico>()
 
+    /**
+     * Este metodo se encarga de obtener el siguiente token a analizar
+     */
     fun obtenerSiguienteToken(){
         posicionActual++
         if(posicionActual < listaTokens.size){
@@ -15,11 +23,17 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         }
     }
 
+    /**
+     * Este metodo se encarga de guardar los errores producidos en la parte sintactica
+     */
     fun reportarError (mensaje : String){
         listaErrores.add(ErrorSintactico(mensaje))
         print("Lista E"+listaErrores.size)
     }
 
+    /**
+     * Este metodo es el que se encarga de lanzar la parte sintactica de la app
+     */
     fun esUnidadDeCompilacion() : UnidadDeCompilacion? {
         val listaMetodos : ArrayList<Metodo> = esListaMetodos()
         return if (listaMetodos.size > 0){
@@ -27,6 +41,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         }else null
     }
 
+    /**
+     * Este metodo se encarga de guardar los metodos creados
+     */
     fun esListaMetodos() : ArrayList<Metodo>{
         val lista : ArrayList<Metodo> = ArrayList<Metodo>()
         var m : Metodo? = esMetodo()
@@ -38,6 +55,10 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return lista
 
     }
+
+    /**
+     * Este metodo se encarga de verificar que la estructura de un metodo se encuentre bien escrita
+     */
     fun esMetodo(): Metodo? {
         val modificador : Token? = esModificador()
         if(modificador != null){
@@ -120,6 +141,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Este metodo verifica que el token es un modificador : Publico o Privado
+     */
     fun esModificador(): Token? {
         if(tokenActual.categoria == Categoria.PALABRA_RESERVADA){
             if(tokenActual.lexema == "PUBLICO" || tokenActual.lexema == "PRIVADO"){
@@ -129,6 +153,10 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         }
         return null
     }
+
+    /**
+     * Este metodo verifica el tipo de dato que la declaración retorno en un metodo
+     */
     fun esTipoRetorno() : Token? {
         if (tokenActual.categoria == Categoria.PALABRA_RESERVADA) {
 
@@ -143,6 +171,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Este metodo se encarga de guardas la lista de parametros que se declaran oara un metodo
+     */
     fun esListaParametros() : ArrayList<Parametro>{
         val parametros : ArrayList<Parametro> = ArrayList<Parametro>()
         var p : Parametro? = esParametro()
@@ -153,6 +184,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return parametros
     }
 
+    /**
+     * Este metodo se encarga de verificar la estructura del parametro
+     */
     fun esParametro() : Parametro? {
 
         if(tokenActual.categoria == Categoria.IDENTIFICADOR_VARIABLE){
@@ -173,6 +207,10 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         }
         return null
     }
+
+    /**
+     * Este metodo se encarga de verificar el tipo de dato de una variable, retorno etc
+     */
     fun esTipoDato() : Token? {
         if (tokenActual.categoria === Categoria.PALABRA_RESERVADA) {
             if (tokenActual.lexema == "ENTERO" || tokenActual.lexema == "CADENA_CARACTERES" || tokenActual.lexema == "REAL" || tokenActual.lexema == "BOOLEANO" || tokenActual.lexema == "CARACTER") {
@@ -184,6 +222,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Este metodo se encarga de guardar la sentencias que se encuentran en metodos o sentencias
+     */
     fun esBloqueSentencias() : ArrayList<Sentencia>{
         val sentencias : ArrayList<Sentencia> = ArrayList<Sentencia>()
         var s : Sentencia? = esSentencia()
@@ -194,6 +235,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return sentencias
     }
 
+    /**
+     * Este metodo se encarga de la verificacion del tipo de sentencia
+     */
     fun esSentencia() : Sentencia? {
         var sentencia : Sentencia? = null
 
@@ -236,6 +280,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Este metodo se encarga de verificar la estructura de la sentencia decremento
+     */
     fun esDecremento() : SentenciaDecremento? {
         if (tokenActual.categoria == Categoria.DECREMENTO) {
             val decremento = tokenActual
@@ -255,6 +302,10 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         }
         return null
     }
+
+    /**
+     * Este metodo se encarga de analizar la estructura de la sentencia incremento
+     */
     fun esIncremento() : SentenciaIncremento? {
         if (tokenActual.categoria == Categoria.INCREMENTO) {
             val incremento = tokenActual
@@ -274,13 +325,17 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         }
         return null
     }
+
+    /**
+     * Este metodo se encarga de verificar la estructura de leer
+     */
     fun esLeer() : Leer? {
         val palabraReservada = tokenActual
-        if (palabraReservada.categoria === Categoria.PALABRA_RESERVADA
+        if (palabraReservada.categoria == Categoria.PALABRA_RESERVADA
             && palabraReservada.lexema == "LEER"
         ) {
             obtenerSiguienteToken()
-            if (tokenActual.categoria === Categoria.IDENTIFICADOR_VARIABLE) {
+            if (tokenActual.categoria == Categoria.IDENTIFICADOR_VARIABLE) {
                 val id = tokenActual
                 obtenerSiguienteToken()
                 val terminal = tokenActual
@@ -296,6 +351,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         }
         return null
     }
+    /**
+     * Este metodo se encarga de verificar la estructura de la sentencia SI
+     */
     fun esSentenciaSi() : Si? {
         if (tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema.equals("SI")) {
             var si : Token = tokenActual
@@ -344,6 +402,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Este metodo se encarga de verificar la estructura de la sentencia Declaración de variable
+     */
     fun esDeclaracionVariable() : DeclaracionVariable?{
         if (tokenActual.categoria == Categoria.IDENTIFICADOR_VARIABLE) {
             val identificadorVariable =  tokenActual
@@ -368,6 +429,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Este metodo se encarga de verificar la estructura de IMPRIMIR
+     */
     fun esImpresion() : Impresion? {
         val palabraReservada = tokenActual
         if (palabraReservada.categoria == Categoria.PALABRA_RESERVADA && palabraReservada.lexema == "IMPRIMIR") {
@@ -402,45 +466,49 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Este metodo se encarga de verificar la estructura de invocar un metodo
+     */
     fun esInvocacionMetodo() : InvocacionMetodo? {
-        if (tokenActual.categoria === Categoria.IDENTIFICADOR_CLASE) {
-            val identificadorClase = tokenActual
+        if(tokenActual.categoria == Categoria.IDENTIFICADOR_METODO){
+            val nombreMetodo = tokenActual
             obtenerSiguienteToken()
-            if (tokenActual.categoria === Categoria.PUNTO) {
+            if(tokenActual.categoria == Categoria.AGRUPADORES_APERTURA && tokenActual.lexema == ".("){
                 obtenerSiguienteToken()
-                if (tokenActual.categoria === Categoria.IDENTIFICADOR_METODO) {
-                    val identificadorMetodo = tokenActual
+                val argumentos : ArrayList<Expresion> = esListaArgumentos()
+                if(tokenActual.categoria == Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".)"){
                     obtenerSiguienteToken()
-                    if (tokenActual.categoria === Categoria.AGRUPADORES_APERTURA && tokenActual.lexema == ".(") {
+                    if(tokenActual.categoria == Categoria.FINCODIGO){
                         obtenerSiguienteToken()
-                        if (tokenActual.categoria === Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".)") {
-                            obtenerSiguienteToken()
-                            if (tokenActual.categoria === Categoria.FINCODIGO) {
-                                obtenerSiguienteToken()
-                                return InvocacionMetodo(identificadorClase, identificadorMetodo)
-                            } else {
-                                reportarError(
-                                    "Falta terminal en la invocacion")
-                            }
-                        } else {
-                            reportarError(
-                                "Falta el simbolo de cierre  en la invocacion")
-                        }
-                    } else {
-                        reportarError(
-                            "Falta simbolo de apertura en la invocacion" )
+                        return InvocacionMetodo(nombreMetodo,argumentos)
+                    }else {
+                        reportarError("Falta fin de codigo en IM")
                     }
-                } else {
-                    reportarError(
-                        "Falta el identificador del metodo")
+                }else{
+                    reportarError("Falta adrupador de cierre en IM")
                 }
-            } else {
-                reportarError(
-                    "Falta el punto")
+            }else{
+                reportarError("Fata agrupador de apertura en IM")
             }
         }
         return null
     }
+
+    /**
+     * Este metodo se encarga de guardar Expresiones
+     */
+    fun esListaArgumentos() : ArrayList<Expresion> {
+        val argumentos : ArrayList<Expresion> = ArrayList<Expresion>()
+        var ex : Expresion? = esExpresion()
+        while (ex != null){
+            argumentos.add(ex)
+            ex = esExpresion()
+        }
+        return argumentos
+    }
+    /**
+     * Este metodo se encarga de verificar la estructura de la sentencia mientras
+     */
     fun esSentenciaMientras() : Mientras? {
         if (tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "MIENTRAS") {
             val mientras = tokenActual
@@ -484,6 +552,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Este metodo se encarga de verificar la estructura de Asignación
+     */
     fun esAsignacion() : Asignacion? {
         val tipoDato = esTipoDato()
         if (tipoDato != null) {
@@ -512,6 +583,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         }
         return null
     }
+    /**
+     * Este metodo se encarga de verificar Que tipo de Expresión es
+     */
     fun esExpresion() : Expresion? {
         var expresion : Expresion? = null
 
@@ -533,6 +607,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return expresion
     }
 
+    /**
+     * Este metodo se encarga de verificar la estructura de La expresión cadena
+     */
     fun esExpresionCadena(): ExpresionCadena? {
         if (tokenActual.categoria === Categoria.CADENA_CARACTERES) {
             val cadena = tokenActual
@@ -555,6 +632,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Este metodo se encarga de verificar la estructura de la expresión lógica
+     */
     fun esExpresionLogica(): ExpresionLogica? {
         val expresion1 = esExpresionRelacional()
         if (expresion1 != null) {
@@ -576,6 +656,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Este metodo se encarga de verificar la estructura de expresión Relacional
+     */
     private fun esExpresionRelacional(): ExpresionRelacional? {
         val expAritmetica: ExpresionAritmetica? = esExpresionAritmetica()
         if (expAritmetica != null) {
@@ -612,6 +695,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Este metodo se encarga de verificar la estructura de la expresión Aritmetica
+     */
     fun esExpresionAritmetica() : ExpresionAritmetica? {
         val term1: Termino? = esTermino()
         if (term1 != null) {
@@ -649,6 +735,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Este metodo se encarga de verificar la estructura de Termino
+     */
     fun esTermino() : Termino? {
         var termino: Token? = null
         if (tokenActual.categoria === Categoria.IDENTIFICADOR_VARIABLE) {
