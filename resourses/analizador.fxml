@@ -87,9 +87,7 @@
                   </Label>
                   <TableView fx:id="tablaErrorSintactico" layoutX="14.0" layoutY="76.0" prefHeight="333.0" prefWidth="618.0">
                     <columns>
-                      <TableColumn fx:id="ColumMensaje" prefWidth="359.99995708465576" text="Mensaje" />
-                      <TableColumn fx:id="columFilaSintaxis" minWidth="0.0" prefWidth="122.40005493164062" text="Fila" />
-                        <TableColumn fx:id="columColunmnaSintaxis" prefWidth="136.00006103515625" text="Columna" />
+                      <TableColumn fx:id="ColumMensaje" prefWidth="617.6000122070312" text="Mensaje" />
                     </columns>
                   </TableView>
                </children>

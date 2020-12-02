@@ -35,8 +35,6 @@ class ExpresionAritmetica : Expresion {
                 }else if (expresionA != null ){
                     raiz.children.add( expresionA!!.getArbolVisual() )
                 }
-            }else {
-                raiz.children.add( termino!!.getArbolVisual() )
             }
         }
         return raiz

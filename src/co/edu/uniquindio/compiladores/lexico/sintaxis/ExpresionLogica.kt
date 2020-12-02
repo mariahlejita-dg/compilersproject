@@ -15,12 +15,20 @@ class ExpresionLogica : Expresion {
         this.operadorLogico = operdorLogico
         this.expresion2 = expresion2
     }
+    constructor(expresion1 : ExpresionRelacional) : this(){
+        this.expresion1 = expresion1
+    }
+
 
     override fun getArbolVisual(): TreeItem<String> {
         val raiz = TreeItem( "Expresion logica")
         raiz.children.add( expresion1!!.getArbolVisual() )
-        raiz.children.add( TreeItem( operadorLogico!!.lexema) )
-        raiz.children.add( expresion2!!.getArbolVisual() )
+        if(operadorLogico != null){
+            raiz.children.add( TreeItem( operadorLogico!!.lexema) )
+        }
+        if(expresion2 != null){
+            raiz.children.add( expresion2!!.getArbolVisual() )
+        }
         return raiz
     }
 }

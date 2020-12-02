@@ -17,6 +17,7 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
 
     fun reportarError (mensaje : String){
         listaErrores.add(ErrorSintactico(mensaje))
+        print("Lista E"+listaErrores.size)
     }
 
     fun esUnidadDeCompilacion() : UnidadDeCompilacion? {
@@ -38,8 +39,8 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
 
     }
     fun esMetodo(): Metodo? {
-        if(tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "PUBLICO"){
-            obtenerSiguienteToken()
+        val modificador : Token? = esModificador()
+        if(modificador != null){
             if(tokenActual.categoria == Categoria.IDENTIFICADOR_METODO){
                 val nombre = tokenActual
                 obtenerSiguienteToken()
@@ -55,7 +56,6 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
                             print(tipoRetorno!!.lexema+"\n")
                             obtenerSiguienteToken()
                             if(tipoRetorno != null){
-                                print("entro\n")
                                 if(tipoRetorno.lexema == "NO-RETORNO"){
                                     if(tokenActual.categoria == Categoria.AGRUPADORES_APERTURA && tokenActual.lexema == ".{"){
                                         obtenerSiguienteToken()
@@ -65,6 +65,8 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
                                             if(tokenActual.categoria == Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".}"){
                                                 obtenerSiguienteToken()
                                                 return Metodo(nombre,parametros, tipoRetorno!!, bloqueSentencias,Termino(tipoRetorno))
+                                            }else{
+                                                reportarError("Falta llave de cierre")
                                             }
                                         }else {
                                             reportarError("Faltó el bloque de sentencias en el metodo")
@@ -84,10 +86,20 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
                                                     if(tokenActual.categoria == Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".}"){
                                                         obtenerSiguienteToken()
                                                         return Metodo(nombre,parametros, tipoRetorno!!, bloqueSentencias,termino)
+                                                    }else{
+                                                        reportarError("Falto llave de cierre")
                                                     }
+                                                }else{
+                                                    reportarError("Falta termino a retornar")
                                                 }
+                                            }else {
+                                                reportarError("falta  RETORNO")
                                             }
+                                        }else {
+                                            reportarError("Faltan sentencias")
                                         }
+                                    }else {
+                                        reportarError("Falta llave de apertura")
                                     }
                                 }
                             }else {
@@ -95,8 +107,6 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
                             }
 
                         }
-
-
                     }else {
                         reportarError("Falta parentesis derecho")
                     }
@@ -110,6 +120,15 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         return null
     }
 
+    fun esModificador(): Token? {
+        if(tokenActual.categoria == Categoria.PALABRA_RESERVADA){
+            if(tokenActual.lexema == "PUBLICO" || tokenActual.lexema == "PRIVADO"){
+                obtenerSiguienteToken()
+                return tokenActual
+            }
+        }
+        return null
+    }
     fun esTipoRetorno() : Token? {
         if (tokenActual.categoria == Categoria.PALABRA_RESERVADA) {
 
@@ -139,12 +158,10 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
         if(tokenActual.categoria == Categoria.IDENTIFICADOR_VARIABLE){
             var identificadorVariable = tokenActual
             obtenerSiguienteToken()
-            var tipoDato: Token? = null
             if(tokenActual.categoria == Categoria.DOS_PUNTOS ){
                 obtenerSiguienteToken()
-                tipoDato = esTipoDato()
+               var tipoDato = esTipoDato()
                 if(tipoDato != null){
-                    obtenerSiguienteToken()
                     return Parametro(identificadorVariable, tipoDato)
                 }else{
                     reportarError("Faltó el tipo de variable")
@@ -159,7 +176,9 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
     fun esTipoDato() : Token? {
         if (tokenActual.categoria === Categoria.PALABRA_RESERVADA) {
             if (tokenActual.lexema == "ENTERO" || tokenActual.lexema == "CADENA_CARACTERES" || tokenActual.lexema == "REAL" || tokenActual.lexema == "BOOLEANO" || tokenActual.lexema == "CARACTER") {
-                return tokenActual
+                var tokenA = tokenActual
+                obtenerSiguienteToken()
+                return tokenA
             }
         }
         return null
@@ -176,14 +195,296 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
     }
 
     fun esSentencia() : Sentencia? {
-        var sentencia : Sentencia? = esAsignacion()
+        var sentencia : Sentencia? = null
+
+        sentencia = esAsignacion()
+        if(sentencia != null){
+            return sentencia
+        }
+        sentencia = esSentenciaMientras()
+        if(sentencia != null){
+            return sentencia
+        }
+        sentencia = esInvocacionMetodo()
+        if(sentencia != null){
+            return sentencia
+        }
+        sentencia = esImpresion()
+        if(sentencia != null){
+            return sentencia
+        }
+        sentencia = esDeclaracionVariable()
+        if(sentencia != null){
+            return sentencia
+        }
+        sentencia = esSentenciaSi()
+        if(sentencia != null){
+            return sentencia
+        }
+        sentencia = esLeer()
+        if(sentencia != null){
+            return sentencia
+        }
+        sentencia = esIncremento()
+        if(sentencia != null){
+            return sentencia
+        }
+        sentencia = esDecremento()
         if(sentencia != null){
             return sentencia
         }
         return null
     }
 
-    fun esAsignacion() : Sentencia? {
+    fun esDecremento() : SentenciaDecremento? {
+        if (tokenActual.categoria == Categoria.DECREMENTO) {
+            val decremento = tokenActual
+            obtenerSiguienteToken()
+            if (tokenActual.categoria === Categoria.IDENTIFICADOR_VARIABLE) {
+                val identificador = tokenActual
+                obtenerSiguienteToken()
+                if(tokenActual.categoria == Categoria.FINCODIGO){
+                    obtenerSiguienteToken()
+                    return SentenciaDecremento(identificador, decremento)
+                }else{
+                    reportarError("Falta fin de codigo")
+                }
+            } else {
+                reportarError("Falta el operador de decremento  ")
+            }
+        }
+        return null
+    }
+    fun esIncremento() : SentenciaIncremento? {
+        if (tokenActual.categoria == Categoria.INCREMENTO) {
+            val incremento = tokenActual
+            obtenerSiguienteToken()
+            if (tokenActual.categoria == Categoria.IDENTIFICADOR_VARIABLE) {
+                val identificador = tokenActual
+                obtenerSiguienteToken()
+                if(tokenActual.categoria == Categoria.FINCODIGO){
+                    obtenerSiguienteToken()
+                    return SentenciaIncremento(identificador, incremento)
+                }else{
+                    reportarError("Falta fin de codigo")
+                }
+            } else {
+                reportarError("Falta el operador de incremento  ")
+            }
+        }
+        return null
+    }
+    fun esLeer() : Leer? {
+        val palabraReservada = tokenActual
+        if (palabraReservada.categoria === Categoria.PALABRA_RESERVADA
+            && palabraReservada.lexema == "LEER"
+        ) {
+            obtenerSiguienteToken()
+            if (tokenActual.categoria === Categoria.IDENTIFICADOR_VARIABLE) {
+                val id = tokenActual
+                obtenerSiguienteToken()
+                val terminal = tokenActual
+                if (terminal.categoria === Categoria.FINCODIGO) {
+                    obtenerSiguienteToken()
+                    return Leer(id)
+                } else {
+                    reportarError("Falta el terminal en el leer")
+                }
+            } else {
+                reportarError("Falta el idVariable en el leer")
+            }
+        }
+        return null
+    }
+    fun esSentenciaSi() : Si? {
+        if (tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema.equals("SI")) {
+            var si : Token = tokenActual
+            obtenerSiguienteToken()
+            if (tokenActual.categoria == Categoria.AGRUPADORES_APERTURA && tokenActual.lexema == ".(") {
+                obtenerSiguienteToken()
+                var expresion : ExpresionRelacional? = esExpresionRelacional()
+                if (expresion != null) {
+                    if (tokenActual.categoria == Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".)") {
+                        obtenerSiguienteToken();
+                        if (tokenActual.categoria == Categoria.AGRUPADORES_APERTURA && tokenActual.lexema == ".{") {
+                            obtenerSiguienteToken()
+                            var listaSentencias :ArrayList<Sentencia> = esBloqueSentencias();
+                            if (listaSentencias != null) {
+                                if (tokenActual.categoria == Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".}") {
+                                    obtenerSiguienteToken()
+                                    return Si(si, expresion, listaSentencias);
+                                } else {
+                                    reportarError(
+                                        "Falta simbolo de cierre } en SI")
+                                }
+                            } else {
+                                if (tokenActual.categoria == Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".}") {
+                                    obtenerSiguienteToken();
+                                    return  Si(si, expresion);
+                                } else {
+                                    reportarError(
+                                        "Falta simbolo de cierre } en SI")
+                                }
+
+                            }
+                        } else {
+                            reportarError(
+                                "Falta simbolo de apertura en SI")
+                        }
+                    } else {
+                        reportarError(  "Falta simbolo de cierre  en SI")
+                    }
+                } else {
+                    reportarError("Falta una expresion relacional en SI");
+                }
+            } else {
+                reportarError("Falta el simbolo de apertura  en SI")
+            }
+        }
+        return null
+    }
+
+    fun esDeclaracionVariable() : DeclaracionVariable?{
+        if (tokenActual.categoria == Categoria.IDENTIFICADOR_VARIABLE) {
+            val identificadorVariable =  tokenActual
+            obtenerSiguienteToken()
+            if(tokenActual.categoria == Categoria.DOS_PUNTOS){
+                obtenerSiguienteToken()
+                val tipoDato = esTipoDato()
+                if(tipoDato != null){
+                    if(tokenActual.categoria == Categoria.FINCODIGO){
+                        obtenerSiguienteToken()
+                        return DeclaracionVariable(identificadorVariable, tipoDato)
+                    }else {
+                        reportarError("Falto fin de codigo")
+                    }
+                }else{
+                    reportarError("Faltó el tipo de dato")
+                }
+            }else {
+                reportarError("Faltan los dos punto")
+            }
+        }
+        return null
+    }
+
+    fun esImpresion() : Impresion? {
+        val palabraReservada = tokenActual
+        if (palabraReservada.categoria == Categoria.PALABRA_RESERVADA && palabraReservada.lexema == "IMPRIMIR") {
+            obtenerSiguienteToken()
+            val parIzq = tokenActual
+            if (parIzq.categoria == Categoria.AGRUPADORES_APERTURA && tokenActual.lexema == ".(") {
+                obtenerSiguienteToken()
+                val exp = esExpresion()
+                if (exp != null) {
+                    val parDer = tokenActual
+                    if (parDer.categoria === Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".)") {
+                        obtenerSiguienteToken()
+                        val finSentencia = tokenActual
+                        if (finSentencia.categoria === Categoria.FINCODIGO) {
+                            obtenerSiguienteToken()
+                            return Impresion(palabraReservada, exp)
+                        } else {
+                            reportarError("Falta el terminal")
+                        }
+                    } else {
+                        reportarError(
+                            "Falta parentesis derecho en la impresion")
+                    }
+                } else {
+                    reportarError("Falta expresion en la impresion")
+                }
+            } else {
+                reportarError(
+                    "Falta parentesis izquierdo en la impresion")
+            }
+        }
+        return null
+    }
+
+    fun esInvocacionMetodo() : InvocacionMetodo? {
+        if (tokenActual.categoria === Categoria.IDENTIFICADOR_CLASE) {
+            val identificadorClase = tokenActual
+            obtenerSiguienteToken()
+            if (tokenActual.categoria === Categoria.PUNTO) {
+                obtenerSiguienteToken()
+                if (tokenActual.categoria === Categoria.IDENTIFICADOR_METODO) {
+                    val identificadorMetodo = tokenActual
+                    obtenerSiguienteToken()
+                    if (tokenActual.categoria === Categoria.AGRUPADORES_APERTURA && tokenActual.lexema == ".(") {
+                        obtenerSiguienteToken()
+                        if (tokenActual.categoria === Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".)") {
+                            obtenerSiguienteToken()
+                            if (tokenActual.categoria === Categoria.FINCODIGO) {
+                                obtenerSiguienteToken()
+                                return InvocacionMetodo(identificadorClase, identificadorMetodo)
+                            } else {
+                                reportarError(
+                                    "Falta terminal en la invocacion")
+                            }
+                        } else {
+                            reportarError(
+                                "Falta el simbolo de cierre  en la invocacion")
+                        }
+                    } else {
+                        reportarError(
+                            "Falta simbolo de apertura en la invocacion" )
+                    }
+                } else {
+                    reportarError(
+                        "Falta el identificador del metodo")
+                }
+            } else {
+                reportarError(
+                    "Falta el punto")
+            }
+        }
+        return null
+    }
+    fun esSentenciaMientras() : Mientras? {
+        if (tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "MIENTRAS") {
+            val mientras = tokenActual
+            obtenerSiguienteToken()
+            if (tokenActual.categoria == Categoria.AGRUPADORES_APERTURA && tokenActual.lexema == ".(") {
+                obtenerSiguienteToken()
+                val expresionLogica = esExpresionLogica()
+                if (expresionLogica != null) {
+                    if (tokenActual.categoria == Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".)") {
+                        obtenerSiguienteToken()
+                        if (tokenActual.categoria == Categoria.AGRUPADORES_APERTURA && tokenActual.lexema == ".{") {
+                            obtenerSiguienteToken()
+                            val listaSentencias = esBloqueSentencias()
+                            if (listaSentencias != null) {
+                                if (tokenActual.categoria == Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".}") {
+                                    obtenerSiguienteToken()
+                                    return Mientras(mientras, expresionLogica, listaSentencias)
+                                } else {
+                                    reportarError(
+                                        "Falta terminal en SM" )
+                                }
+                            } else if (tokenActual.categoria == Categoria.AGRUPADORES_CIERRE && tokenActual.lexema == ".}") {
+                                obtenerSiguienteToken()
+                                return Mientras(mientras, expresionLogica)
+                            }
+                        } else {
+                            reportarError(
+                                "Falta llave izquierda  en SM")
+                        }
+                    } else {
+                        reportarError(
+                            "Falta simbolo de cierre  en SM")
+                    }
+                } else {
+                    reportarError("Falta la expresion logica en SM")
+                }
+            } else {
+                reportarError("Falta el simbolo de apertura  en SM")
+            }
+        }
+        return null
+    }
+
+    fun esAsignacion() : Asignacion? {
         val tipoDato = esTipoDato()
         if (tipoDato != null) {
             obtenerSiguienteToken()
@@ -214,18 +515,106 @@ class AnalizadorSintactico2 (var listaTokens:ArrayList<Token>) {
     fun esExpresion() : Expresion? {
         var expresion : Expresion? = null
 
-        expresion =  esExpresionAritmetica()
-        if(expresion != null){
+        expresion = esExpresionAritmetica()
+        if (expresion != null) {
             return expresion
         }
+        expresion = esExpresionRelacional()
+        if (expresion != null) {
+            return expresion
+        }
+        expresion = esExpresionLogica()
+        if (expresion != null) {
+            return expresion
+        }
+        expresion = esExpresionCadena()
+        return expresion
 
         return expresion
+    }
+
+    fun esExpresionCadena(): ExpresionCadena? {
+        if (tokenActual.categoria === Categoria.CADENA_CARACTERES) {
+            val cadena = tokenActual
+            obtenerSiguienteToken()
+            if (tokenActual.categoria === Categoria.CONCATENACION) {
+                val concatenacion = tokenActual
+                obtenerSiguienteToken()
+                val exp = esExpresion()
+                if (exp != null) {
+                    obtenerSiguienteToken()
+                    return ExpresionCadena(cadena, concatenacion, exp)
+                } else {
+                    reportarError("Falta la palabra con")
+                }
+            } else {
+                obtenerSiguienteToken()
+                return ExpresionCadena(cadena)
+            }
+        }
+        return null
+    }
+
+    fun esExpresionLogica(): ExpresionLogica? {
+        val expresion1 = esExpresionRelacional()
+        if (expresion1 != null) {
+            if (tokenActual.categoria === Categoria.OPERADOR_LOGICO) {
+                val operador = tokenActual
+                obtenerSiguienteToken()
+                val expresion2 = esExpresionRelacional()
+                if (expresion2 != null) {
+                    // obtenerSgteToken();
+                    return ExpresionLogica(expresion1, operador, expresion2)
+                } else {
+                    reportarError("Falta una expresion en EL ")
+                }
+            } else {
+
+                return ExpresionLogica(expresion1)
+            }
+        }
+        return null
+    }
+
+    private fun esExpresionRelacional(): ExpresionRelacional? {
+        val expAritmetica: ExpresionAritmetica? = esExpresionAritmetica()
+        if (expAritmetica != null) {
+            //obtenerSgteToken();
+            if (tokenActual.categoria === Categoria.OPERADOR_RELACIONAL) {
+                val opRelacional = tokenActual
+                obtenerSiguienteToken()
+                val expArit: ExpresionAritmetica? = esExpresionAritmetica()
+                if (expArit != null) {
+                    return ExpresionRelacional(expAritmetica, opRelacional, expArit)
+                } else {
+                    reportarError("falta Expresión Aritmetica en ER")
+                }
+            } else {
+                reportarError("Falta operador Relacional ER")
+            }
+        }
+        val expCad1 = esExpresionCadena()
+        if (expCad1 != null) {
+            //obtenerSgteToken();
+            if (tokenActual.categoria === Categoria.OPERADOR_RELACIONAL) {
+                val opRelacional = tokenActual
+                obtenerSiguienteToken()
+                val expCad2 = esExpresionCadena()
+                if (expCad2 != null) {
+                    return ExpresionRelacional(expCad1, opRelacional, expCad2)
+                } else {
+                    reportarError("falta Expresión Cadena en ER")
+                }
+            } else {
+                reportarError("Falta operador Cadena en ER")
+            }
+        }
+        return null
     }
 
     fun esExpresionAritmetica() : ExpresionAritmetica? {
         val term1: Termino? = esTermino()
         if (term1 != null) {
-            // obtenerSgteToken();
             if (tokenActual.categoria === Categoria.OPERADOR_ARITMETICO) {
                 val operAritm = tokenActual
                 obtenerSiguienteToken()

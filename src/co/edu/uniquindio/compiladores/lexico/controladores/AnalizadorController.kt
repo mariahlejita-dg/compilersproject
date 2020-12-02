@@ -42,8 +42,6 @@ class AnalizadorController: Initializable {
 
     @FXML lateinit var tablaErrorSintactico : TableView<ErrorSintactico>
     @FXML lateinit var ColumMensaje : TableColumn<ErrorSintactico,String>
-    @FXML lateinit var columFilaSintaxis : TableColumn<ErrorSintactico,String>
-    @FXML lateinit var columColunmnaSintaxis : TableColumn<ErrorSintactico,String>
 
     @FXML lateinit var TreeVisual : TreeView<String>
 
@@ -62,6 +60,8 @@ class AnalizadorController: Initializable {
         columFilaError.cellValueFactory = PropertyValueFactory("fila")
         columColumnaError.cellValueFactory = PropertyValueFactory("columna")
         columCategoriaError.cellValueFactory = PropertyValueFactory("categoria")
+        //Tabla de Errores Sintacticos
+        ColumMensaje.cellValueFactory = PropertyValueFactory("mensaje")
     }
 
 
@@ -169,6 +169,8 @@ class AnalizadorController: Initializable {
         txtCodigo.requestFocus()
         tableErrores.setItems(FXCollections.observableArrayList());
         tablaSimbolos.setItems(FXCollections.observableArrayList());
+        tablaErrorSintactico.setItems(FXCollections.observableArrayList())
+        TreeVisual.root = TreeItem()
     }
     @FXML
     fun compilar(actionEvent: ActionEvent) {
@@ -180,8 +182,10 @@ class AnalizadorController: Initializable {
             if(lexicoA.listaErrores.size == 0){
                 val sintaxisA = AnalizadorSintactico2(lexicoA.listaSimbolos)
                 val uc = sintaxisA.esUnidadDeCompilacion()
-                TreeVisual.root = uc!!.getArbolVisual()
-                print(uc!!.getArbolVisual())
+                tablaErrorSintactico.items = FXCollections.observableArrayList(sintaxisA.listaErrores)
+                if(sintaxisA.listaErrores.size == 0){
+                    TreeVisual.root = uc!!.getArbolVisual()
+                }
             }
 
         }
