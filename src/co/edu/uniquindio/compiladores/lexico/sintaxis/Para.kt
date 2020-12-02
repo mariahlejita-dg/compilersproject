@@ -5,7 +5,7 @@ import javafx.scene.control.TreeItem
 import java.util.ArrayList
 import javax.swing.tree.DefaultMutableTreeNode
 
-class Para {
+class Para: Sentencia {
     private var para: Token? = null
     var expresion: Expresion? = null
     private var decremento: SentenciaDecremento? = null
@@ -21,8 +21,8 @@ class Para {
         this.listaSentencias=listaSentencias
     }
 
-    val arbolVisual: TreeItem<String>
-        get() {
+    override fun getArbolVisual() : TreeItem<String>
+    {
             val raiz = TreeItem("Para")
             raiz.children.add(expresion!!.getArbolVisual())
             if (decremento != null) {
