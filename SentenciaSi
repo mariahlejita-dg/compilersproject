@@ -1,0 +1,6 @@
+PUBLICO !mientras .(  .) .: NO-RETORNO
+.{
+MIENTRAS .( #a>>1 .| #b << 2 .) .{
+.}
+
+.}
