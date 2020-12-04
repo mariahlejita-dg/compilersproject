@@ -1,6 +1,8 @@
 package co.edu.uniquindio.compiladores.lexico.sintaxis
 
 import co.edu.uniquindio.compiladores.lexico.lexico.Token
+import co.edu.uniquindio.compiladores.lexico.semantica.Simbolo
+import co.edu.uniquindio.compiladores.lexico.semantica.TabladeSimbolos
 import javafx.scene.control.TreeItem
 import java.util.ArrayList
 
@@ -42,4 +44,26 @@ class Si: Sentencia {
             }
             return raiz
         }
+    fun analizarSemantica(error: ArrayList<String?>?, tS: TabladeSimbolos?, ambito: Simbolo?) {
+        // TODO Auto-generated method stub
+    }
+
+    fun llenarTablaSimbolos(ts: TabladeSimbolos?, ambito: Simbolo?) {
+        // TODO Auto-generated method stub
+    }
+
+    override fun traducir(): String? {
+        val code = "if"
+        var sent: String? = ""
+        for (i in listaSentencias!!.indices) {
+            sent += if (i == listaSentencias!!.size - 1) {
+                listaSentencias!![i].traducir()
+            } else {
+                listaSentencias!![i].traducir() + ", "
+            }
+        }
+        return """$code (${expresion!!.traducir()} )  { 
+$sent
+ }"""
+    }
 }

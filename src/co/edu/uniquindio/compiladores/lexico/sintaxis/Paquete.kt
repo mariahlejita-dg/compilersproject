@@ -27,7 +27,19 @@ class Paquete {
         raiz.children.add(TreeItem(nombrePaquete))
             return raiz
         }
+    fun traducir(): String {
+        val st = nombrePaquete!!.replace("_".toRegex(), "")
+        return "package $st;"
+    }
 
+    /**
+     * @param palabra_reservada
+     * @param nombrePaquete
+     */
+    init {
+        this.palabra_reservada = palabra_reservada
+        this.nombrePaquete = nombrePaquete
+    }
 
 
 

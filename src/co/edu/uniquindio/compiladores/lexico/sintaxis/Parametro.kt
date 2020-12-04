@@ -22,7 +22,24 @@ class Parametro {
         }
 
 
-
+    fun traducir(): String {
+        var code = ""
+        var st = ""
+        if (tipoDedato!!.lexema.equals("CADENA")) {
+            code += "String "
+        }
+        if (tipoDedato!!.lexema.equals("ENTERO")) {
+            code += "int "
+        }
+        if (tipoDedato!!.lexema.equals("BOOLEANO")) {
+            code += "boolean "
+        }
+        if (tipoDedato!!.lexema.equals("REAL")) {
+            code += "float "
+        }
+        st = identificadorVariable!!.lexema.replace("#", "")
+        return "$code $st"
+    }
 
 
 

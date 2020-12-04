@@ -1,7 +1,10 @@
 package co.edu.uniquindio.compiladores.lexico.sintaxis
 
 import co.edu.uniquindio.compiladores.lexico.lexico.Token
+import co.edu.uniquindio.compiladores.lexico.semantica.Simbolo
+import co.edu.uniquindio.compiladores.lexico.semantica.TabladeSimbolos
 import javafx.scene.control.TreeItem
+import java.util.ArrayList
 import javax.swing.tree.DefaultMutableTreeNode
 
 class Retorno : Sentencia {
@@ -21,5 +24,13 @@ class Retorno : Sentencia {
             raiz.children.add(termino!!.getArbolVisual())
             return raiz
         }
+    fun analizarSemantica(error: ArrayList<String?>?, tS: TabladeSimbolos?, ambito: Simbolo?) {}
+    fun llenarTablaSimbolos(ts: TabladeSimbolos?, ambito: Simbolo?) {
+        // TODO Auto-generated method stub
+    }
+
+    override fun traducir(): String {
+        return "return " + termino!!.traducir().toString() + ";"
+    }
 
 }

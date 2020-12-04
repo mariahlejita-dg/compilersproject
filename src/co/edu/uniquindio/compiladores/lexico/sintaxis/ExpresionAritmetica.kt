@@ -1,13 +1,18 @@
 package co.edu.uniquindio.compiladores.lexico.sintaxis
 
 import co.edu.uniquindio.compiladores.lexico.lexico.Token
+import co.edu.uniquindio.compiladores.lexico.semantica.Simbolo
+import co.edu.uniquindio.compiladores.lexico.semantica.TabladeSimbolos
 import javafx.scene.control.TreeItem
+import java.util.ArrayList
 
 class ExpresionAritmetica : Expresion {
+
     private var termino : Termino ?= null
     private var  operador : Token ?= null
     private var termino2 : Termino ?= null
     private var expresionA : Expresion ?= null
+
     constructor()
     constructor(termino: Termino):this(){
         this.termino = termino
@@ -39,6 +44,28 @@ class ExpresionAritmetica : Expresion {
         }
         return raiz
     }
+    override fun traducir(): String? {
+        var operador = ""
+        /*if (termino != null) {
+            val expA: String? = termino!!.traducir()
+            if (operador  != null) {
+                when (operador!!.lexema) {
+                    "&:" -> operador = "&&"
+                    "|:" -> operador = "||"
+                    "~:" -> operador = "!"
+                    else -> {
+                    }
+                }
+                if (expresion2 != null) {
+                    val exp: String? = expresion2!!.traducir()
+                    return "$expA $operador $exp"
+                }
+            }
+        }*/
+        return null
+    }
 
-
-}
+    override fun analizarSemantica(errores: ArrayList<String?>?, ts: TabladeSimbolos?, ambito: Simbolo?) {
+        // TODO Auto-generated method stub
+    }
+    }

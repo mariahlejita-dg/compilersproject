@@ -1,6 +1,8 @@
 package co.edu.uniquindio.compiladores.lexico.sintaxis
 
 import co.edu.uniquindio.compiladores.lexico.lexico.Token
+import co.edu.uniquindio.compiladores.lexico.semantica.Simbolo
+import co.edu.uniquindio.compiladores.lexico.semantica.TabladeSimbolos
 import javafx.scene.control.TreeItem
 import java.util.ArrayList
 import javax.swing.tree.DefaultMutableTreeNode
@@ -24,5 +26,15 @@ class SentenciaDecremento  :Sentencia{
             return raiz
         }
 
+     fun analizarSemantica(error: ArrayList<String?>?, tS: TabladeSimbolos?, ambito:Simbolo) {
+        // TODO Auto-generated method stub
+    }
 
+    fun llenarTablaSimbolos(ts: TabladeSimbolos?, ambito: Simbolo?) {
+        // TODO Auto-generated method stub
+    }
+
+    override fun traducir(): String? {
+        return identificadorVariable?.lexema!!.replace("#", "").toString() + "--"
+    }
 }

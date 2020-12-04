@@ -1,7 +1,10 @@
 package co.edu.uniquindio.compiladores.lexico.sintaxis
 
 import co.edu.uniquindio.compiladores.lexico.lexico.Token
+import co.edu.uniquindio.compiladores.lexico.semantica.Simbolo
+import co.edu.uniquindio.compiladores.lexico.semantica.TabladeSimbolos
 import javafx.scene.control.TreeItem
+import java.util.ArrayList
 
 class ExpresionCadena : Expresion {
     private var cadena : Token ?= null
@@ -27,4 +30,13 @@ class ExpresionCadena : Expresion {
         }
         return raiz
     }
+    override fun traducir(): String? {
+        val exp = expresion!!.traducir()
+        return cadena.toString() + "+" + exp
+    }
+
+    override fun analizarSemantica(errores: ArrayList<String?>?, ts: TabladeSimbolos?, ambito: Simbolo?) {
+        // TODO Auto-generated method stub
+    }
+
 }

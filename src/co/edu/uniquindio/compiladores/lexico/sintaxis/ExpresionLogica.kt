@@ -1,8 +1,11 @@
 package co.edu.uniquindio.compiladores.lexico.sintaxis
 
 import co.edu.uniquindio.compiladores.lexico.lexico.Token
+import co.edu.uniquindio.compiladores.lexico.semantica.Simbolo
+import co.edu.uniquindio.compiladores.lexico.semantica.TabladeSimbolos
 import javafx.scene.control.TreeItem
 import sun.reflect.generics.tree.Tree
+import java.util.ArrayList
 
 class ExpresionLogica : Expresion {
     private var expresion1 : ExpresionRelacional ?= null
@@ -30,5 +33,29 @@ class ExpresionLogica : Expresion {
             raiz.children.add( expresion2!!.getArbolVisual() )
         }
         return raiz
+    }
+    override fun traducir(): String? {
+        var operador = ""
+        if (expresion1 != null) {
+            val expA: String? = expresion1!!.traducir()
+            if (operadorLogico != null) {
+                when (operadorLogico!!.lexema) {
+                    "&:" -> operador = "&&"
+                    "|:" -> operador = "||"
+                    "~:" -> operador = "!"
+                    else -> {
+                    }
+                }
+                if (expresion2 != null) {
+                    val exp: String? = expresion2!!.traducir()
+                    return "$expA $operador $exp"
+                }
+            }
+        }
+        return null
+    }
+
+ override fun analizarSemantica(errores: ArrayList<String?>?, ts: TabladeSimbolos?, ambito: Simbolo?) {
+        // TODO Auto-generated method stub
     }
 }

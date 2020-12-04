@@ -5,6 +5,6 @@ import java.util.ArrayList
 
 abstract class Sentencia {
     abstract fun getArbolVisual() : TreeItem<String>
-
+    abstract fun traducir(): String?
 
 }

@@ -1,5 +1,6 @@
 package co.edu.uniquindio.compiladores.lexico.sintaxis
 
+import co.edu.uniquindio.compiladores.lexico.semantica.TabladeSimbolos
 import javafx.scene.control.TreeItem
 
 class CuerpoClase  {
@@ -38,5 +39,28 @@ class CuerpoClase  {
             }
         }
         return raiz
+    }
+    fun traducir(): String {
+        var codigo = ""
+        if (metodo != null) {
+            codigo += metodo!!.traducir().toString() + "\n"
+            if (cuerpoClase != null) {
+                codigo += cuerpoClase!!.traducir()
+            }
+        } else if (declaracionVariable != null) {
+            codigo += declaracionVariable!!.traducir().toString() + "\n"
+            if (cuerpoClase != null) {
+                codigo += cuerpoClase!!.traducir()
+            }
+        }
+        return codigo
+    }
+
+    fun analizarSemantica(errores: ArrayList<String?>?, ts: TabladeSimbolos?) {
+
+    }
+
+    fun llenarTablaSimbolos(ts: TabladeSimbolos?) {
+
     }
 }

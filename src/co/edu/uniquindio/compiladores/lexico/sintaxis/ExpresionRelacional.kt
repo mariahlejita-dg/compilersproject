@@ -1,7 +1,10 @@
 package co.edu.uniquindio.compiladores.lexico.sintaxis
 
 import co.edu.uniquindio.compiladores.lexico.lexico.Token
+import co.edu.uniquindio.compiladores.lexico.semantica.Simbolo
+import co.edu.uniquindio.compiladores.lexico.semantica.TabladeSimbolos
 import javafx.scene.control.TreeItem
+import java.util.ArrayList
 
 class ExpresionRelacional : Expresion {
     private var expresionAritmetica : ExpresionAritmetica ?= null
@@ -41,5 +44,34 @@ class ExpresionRelacional : Expresion {
             }
         }
         return raiz
+    }
+
+    override fun traducir(): String? {
+        //TODO
+        var operador = ""
+        if (expresionAritmetica != null) {
+            val exp1 = expresionAritmetica!!.traducir()
+            if (exp1!= null) {
+                when (operadorRelacional?.lexema) {
+                    ">>" -> operador = ">"
+                    ">:" -> operador = ">="
+                    "<<" -> operador = "<"
+                    "<:" -> operador = "<="
+                    "-:" -> operador = "!="
+                    ":" -> operador = "=="
+                    else -> {
+                    }
+                }
+                if (expresionAritmetica2 != null) {
+                    val exp2 = expresionAritmetica2!!.traducir()
+                    return "$exp1 $operador ($exp2 )"
+                }
+            }
+        }
+        return null
+    }
+
+    override fun analizarSemantica(errores: ArrayList<String?>?, ts: TabladeSimbolos?, ambito: Simbolo?) {
+        // TODO Auto-generated method stub
     }
 }

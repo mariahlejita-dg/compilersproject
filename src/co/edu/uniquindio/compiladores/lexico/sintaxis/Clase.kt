@@ -1,6 +1,7 @@
 package co.edu.uniquindio.compiladores.lexico.sintaxis
 
 import co.edu.uniquindio.compiladores.lexico.lexico.Token
+import co.edu.uniquindio.compiladores.lexico.semantica.TabladeSimbolos
 import javafx.scene.control.TreeItem
 
 class Clase  {
@@ -32,4 +33,27 @@ class Clase  {
         return raiz
     }
 
+    fun analizarSemantica(errores: ArrayList<ErrorSemantico>, ts: TabladeSimbolos?) {
+
+    }
+    fun llenarTablaSimbolos(ts: TabladeSimbolos?) {
+        // TODO Auto-generated method stub
+    }
+
+    fun traducir(): String {
+        var code = ""
+        var id = ""
+        var cc = ""
+        if (modificador!!.lexema.equals("PRIVADO")) {
+            code = "private "
+        }
+        if (modificador!!.lexema.equals("PUBLICO")) {
+            code = "public  "
+        }
+        if (identificador_clase != null) {
+            id = " " + identificador_clase!!.lexema.replace("@", "").toLowerCase()
+        }
+        cc = cuerpoClase!!.traducir()
+        return "$code  class$id(){ \n$cc\n }"
+    }
 }
