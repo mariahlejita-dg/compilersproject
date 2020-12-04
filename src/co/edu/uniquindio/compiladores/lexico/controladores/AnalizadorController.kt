@@ -18,7 +18,6 @@ import java.io.*
 import java.net.URL
 import java.util.*
 import javax.swing.JFileChooser
-import javax.swing.JOptionPane
 import javax.swing.filechooser.FileNameExtensionFilter
 
 
@@ -42,8 +41,10 @@ class AnalizadorController: Initializable {
 
     @FXML lateinit var tablaErrorSintactico : TableView<ErrorSintactico>
     @FXML lateinit var ColumMensaje : TableColumn<ErrorSintactico,String>
+    @FXML lateinit var columFilaSintaxis : TableColumn<ErrorSintactico,String>
+    @FXML lateinit var columColunmnaSintaxis : TableColumn<ErrorSintactico,String>
 
-    @FXML lateinit var TreeVisual : TreeView<String>
+    @FXML lateinit var treeVisual : TreeView<String>
 
     lateinit var fichero : File
     var guardado : Boolean = false
@@ -60,8 +61,6 @@ class AnalizadorController: Initializable {
         columFilaError.cellValueFactory = PropertyValueFactory("fila")
         columColumnaError.cellValueFactory = PropertyValueFactory("columna")
         columCategoriaError.cellValueFactory = PropertyValueFactory("categoria")
-        //Tabla de Errores Sintacticos
-        ColumMensaje.cellValueFactory = PropertyValueFactory("mensaje")
     }
 
 
@@ -169,8 +168,6 @@ class AnalizadorController: Initializable {
         txtCodigo.requestFocus()
         tableErrores.setItems(FXCollections.observableArrayList());
         tablaSimbolos.setItems(FXCollections.observableArrayList());
-        tablaErrorSintactico.setItems(FXCollections.observableArrayList())
-        TreeVisual.root = TreeItem()
     }
     @FXML
     fun compilar(actionEvent: ActionEvent) {
@@ -180,18 +177,33 @@ class AnalizadorController: Initializable {
             tablaSimbolos.items =FXCollections.observableArrayList(lexicoA.listaSimbolos)
             tableErrores.items = FXCollections.observableArrayList(lexicoA.listaErrores)
             if(lexicoA.listaErrores.size == 0){
+
                 val sintaxisA = AnalizadorSintactico2(lexicoA.listaSimbolos)
                 val uc = sintaxisA.esUnidadDeCompilacion()
-                tablaErrorSintactico.items = FXCollections.observableArrayList(sintaxisA.listaErrores)
-                if(sintaxisA.listaErrores.size == 0){
-                    TreeVisual.root = uc!!.getArbolVisual()
+                if (uc != null) {
+
+                    treeVisual.root = uc.getArbolVisual()
+
+
                 }
+            }else{
+
+                var alerta = Alert(Alert.AlertType.WARNING)
+
+                alerta.headerText= "Mensaje"
+
+                alerta.contentText="Hay errores lexicos en el codigo fuente"
+
+
+            }
+                }
+
             }
 
         }
-    }
 
 
-}
+
+
 
 
